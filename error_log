@@ -1,0 +1,11 @@
+[26-Jul-2022 08:48:22 UTC] PHP Deprecated:  Required parameter $subject follows optional parameter $cc in /home1/rcahrube/public_html/rcainet/application/libraries/Common.php on line 36
+[26-Jul-2022 08:48:22 UTC] PHP Deprecated:  Required parameter $message follows optional parameter $cc in /home1/rcahrube/public_html/rcainet/application/libraries/Common.php on line 36
+[26-Jul-2022 08:49:45 UTC] PHP Deprecated:  Required parameter $subject follows optional parameter $cc in /home1/rcahrube/public_html/rcainet/application/libraries/Common.php on line 36
+[26-Jul-2022 08:49:45 UTC] PHP Deprecated:  Required parameter $message follows optional parameter $cc in /home1/rcahrube/public_html/rcainet/application/libraries/Common.php on line 36
+[26-Jul-2022 09:35:29 UTC] PHP Deprecated:  Required parameter $subject follows optional parameter $cc in /home1/rcahrube/public_html/rcainet/application/libraries/Common.php on line 36
+[26-Jul-2022 09:35:29 UTC] PHP Deprecated:  Required parameter $message follows optional parameter $cc in /home1/rcahrube/public_html/rcainet/application/libraries/Common.php on line 36
+[11-Aug-2022 09:48:02 UTC] PHP Deprecated:  Required parameter $subject follows optional parameter $cc in /home1/rcahrube/public_html/rcainet/application/libraries/Common.php on line 36
+[11-Aug-2022 09:48:02 UTC] PHP Deprecated:  Required parameter $message follows optional parameter $cc in /home1/rcahrube/public_html/rcainet/application/libraries/Common.php on line 36
+[03-Sep-2022 07:34:14 UTC] PHP Fatal error:  Cannot use empty array elements in arrays in /home1/rcahrube/public_html/rcainet/application/modules/rcatech/models/Call_master.php on line 91
+[03-Sep-2022 07:34:16 UTC] PHP Fatal error:  Cannot use empty array elements in arrays in /home1/rcahrube/public_html/rcainet/application/modules/rcatech/models/Call_master.php on line 91
+[03-Sep-2022 07:34:30 UTC] PHP Fatal error:  Cannot use empty array elements in arrays in /home1/rcahrube/public_html/rcainet/application/modules/rcatech/models/Call_master.php on line 91
