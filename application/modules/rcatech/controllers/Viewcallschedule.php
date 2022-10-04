@@ -83,8 +83,8 @@ class Viewcallschedule extends MX_Controller {
 	 		$this->load->view('admin/layout/main_app_view', $data);
 		} else {
 		
-			$mainmodule_id = 2;
-			$submodule_id = 1;
+			$mainmodule_id = 14;
+			$submodule_id = 80;
 			
 			$status = isset($_GET['a']) ? $_GET['a'] : '1';
 

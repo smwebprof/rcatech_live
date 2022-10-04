@@ -20,7 +20,8 @@ class Item_master extends CI_Model{
 
    function getItemdata($id){ 
 
-        $querystring = "SELECT rim.*,rdm.name FROM rcatech_item_master rim left join rcatech_department_master rdm on rdm.id=rim.department_id where nabcb_flag = $id";
+        //$querystring = "SELECT rim.*,rdm.name FROM rcatech_item_master rim left join rcatech_department_master rdm on rdm.id=rim.department_id where nabcb_flag = $id";
+        $querystring = "SELECT rim.*,rdm.name FROM rcatech_item_master rim left join rcatech_department_master rdm on rdm.id=rim.department_id Where rim.is_active = 1 Order by id";
         $queryforpubid = $this->db->query($querystring);
 
         $result = $queryforpubid->result_array();

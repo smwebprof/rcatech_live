@@ -158,14 +158,14 @@
 								<?php if ($access_right['edit_rights'] == 1) { ?>
 								<td>
 									<span class="label label-sm label-success">
-										 <a href="<?php echo BASE_PATH; ?>edititemsubtypemaster?id=<?php echo base64_encode($manufacturer_data['id']); ?>"  style="color:#fff">Edit</a>
+										 <a href="<?php echo BASE_PATH; ?>editmanufacturer?id=<?php echo base64_encode($manufacturer_data['id']); ?>"  style="color:#fff">Edit</a>
 									</span>
 								</td>
 								<?php } ?>
 								<?php if ($access_right['delete_rights'] == 1) { ?>
 								<td>
 									<span class="label label-sm label-danger">
-										 <a href="<?php echo BASE_PATH; ?>deleteitemmaster?id=<?php echo base64_encode($manufacturer_data['id']); ?>"  style="color:#fff">Delete</a>
+										 <a href="<?php echo BASE_PATH; ?>delmanufacturer?id=<?php echo base64_encode($manufacturer_data['id']); ?>"  style="color:#fff">Delete</a>
 									</span>
 								</td>
 								<?php } ?>

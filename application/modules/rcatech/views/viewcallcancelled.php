@@ -47,7 +47,7 @@
 							<i class="fa fa-angle-right"></i>
 						</li>
 						<li>
-							<a href="<?php echo BASE_PATH; ?>Viewfileregister">
+							<a href="<?php echo BASE_PATH; ?>Viewcallcancelled">
 								Call
 							</a>
 							<i class="fa fa-angle-right"></i>
@@ -119,59 +119,8 @@
 						</div>
 
 						<div class="portlet-body">
-							<div class="table-toolbar">
-								<div class="btn-group">
-									<label class="control-label col-md-3">From Date</label>
-									<div class="input-group input-medium date date-picker" data-date-format="dd-mm-yyyy" data-date-start-date="-6m">
-									<input type="text" class="form-control" name="file_from_date" id="file_from_date" value="<?php if (@$file_from_date) { echo $file_from_date; } /* else { echo date('d-m-Y'); }*/ ?>"readonly>
-									<span for="file_date" class="help-block"></span>
-									<span class="input-group-btn">
-									<button class="btn default" type="button"><i class="fa fa-calendar"></i></button>
-									</span>
-									</div>
-								</div>
-								<div class="btn-group">
-									<label class="control-label col-md-3">To Date</label>
-									<div class="input-group input-medium date date-picker" data-date-format="dd-mm-yyyy" data-date-start-date="-6m">
-									<input type="text" class="form-control" name="file_To_date" id="file_To_date" value="<?php if (@$file_To_date) { echo $file_To_date; } /* else { echo date('d-m-Y'); } */ ?>"readonly>
-									<span for="file_date" class="help-block"></span>
-									<span class="input-group-btn">
-									<button class="btn default" type="button"><i class="fa fa-calendar"></i></button>
-									</span>
-									</div>
-								</div>
-								<div class="btn-group">
-									<label class="control-label col-md-6">Status</label>
-									<div class="input-group">
-									<select class="form-control" id="status" name="status">
-										<option value ="">Select</option>
-										<option value ="Pending" <?php if (@$status == 'Pending') { echo 'selected'; } ?>>Pending</option>
-										<option value ="Running" <?php if (@$status == 'Running') { echo 'selected'; } ?>>Running</option>
-										<option value ="Invoiced" <?php if (@$status == 'Invoiced') { echo 'selected'; } ?>>Invoiced</option>
-										<option value ="Completed" <?php if (@$status == 'Completed') { echo 'selected'; } ?>>Completed</option>
-										<option value ="Cancelled" <?php if (@$status == 'Cancelled') { echo 'selected'; } ?>>Cancel</option>
-									</select>
-									</div>							
-								</div>&nbsp;&nbsp;&nbsp;
-								<div class="btn-group">
-									<?php /*<label class="control-label col-md-6">Vessel Name</label>*/ ?>
-									<div class="input-group">
-									<select class="form-control input-medium select2me" data-placeholder="Select..." name="vessel_name" id="vessel_name">
-										<option value ="">Select Work Order</option>
-										<?php	
-										$rows = $work_types;
-										foreach($rows as $types){
-											echo '<option value="'.$types["work_name"].'">'.$types["work_name"].'</option>';
-										}	
-										?>
-									</select>
-									</div>							
-								</div>
-								<!--<div class="btn-group">
-									<button type="submit" class="btn green">Submit</button>
-								</div>-->
-							</div>
-							<div class="table-toolbar">
+							
+							<?php /*<div class="table-toolbar">
 								<div class="btn-group">
 									<table>
 										<tr>
@@ -222,7 +171,7 @@
 								<div class="btn-group">
 									<button type="submit" class="btn yellow" name="submit" value="excel">View Excel Report</button>
 								</div>
-							</div>
+							</div>*/ ?>
 
 							<table class="table table-striped table-bordered table-hover" id="sample_2">
 				              <thead>
@@ -257,11 +206,11 @@
 				                <th>
 				                   Status
 				                </th>
-				                <?php if ($access_right['edit_rights'] == 1) { ?>
+				                <?php /*if ($access_right['edit_rights'] == 1) { ?>
 				                <th>
 				                   Call Cancel
 				                </th>
-				                <?php } ?>
+				                <?php } */?>
 				                <?php /*if ($this->data['access_right']['delete_rights'] == 1) { ?>
 				                <th>
 				                   Delete
@@ -286,10 +235,10 @@
 					                   <?php echo $i; ?>
 					                </td>
 					                <td>
-					                  <a href="<?php echo BASE_PATH; ?>fullviewfileregister?id=<?php echo base64_encode($call_data['id']); ?>"><?php echo $call_data['call_no']; ?></a>
+					                  <a href="<?php echo BASE_PATH; ?>fullviewcallcancel?id=<?php echo base64_encode($call_data['id']); ?>&fid=<?php echo base64_encode($call_data['file_id']); ?>"><?php echo $call_data['call_no']; ?></a>
 					                </td>
 					                <td>
-					                   <a href="<?php echo BASE_PATH; ?>fullviewfileregister?id=<?php echo base64_encode($call_data['id']); ?>"><?php echo $call_data['file_no']; ?></a>
+					                   <a href="<?php echo BASE_PATH; ?>fullviewcallcancel?id=<?php echo base64_encode($call_data['id']); ?>"><?php echo $call_data['file_no']; ?></a>
 					                </td>					                
 					                <td>
 					                  <?php echo date("d-m-Y", strtotime($call_data['call_date'])); ?>

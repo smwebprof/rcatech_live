@@ -56,7 +56,7 @@ class User_master extends CI_Model{
   
         #$querystring = "SELECT * FROM rcatech_users_master WHERE email = '".$params['useremail']."' and password = '".$params['password']."'";
 
-        $querystring = "SELECT * FROM rcatech_employee_users_master Where is_active = 1 and id!= 11 order by id desc";
+        $querystring = "SELECT * FROM rcatech_employee_users_master Where is_active = 1 and (id!= 1 and id!= 2)  order by id asc";
         $queryforpubid = $this->db->query($querystring);
 
         $result = $queryforpubid->result_array();
@@ -288,7 +288,7 @@ class User_master extends CI_Model{
         
   
         #$querystring = "SELECT * FROM rcatech_submenu_master where is_active = 1 and user_id = '".$params."'";
-        $querystring = "SELECT * FROM rcatech_submenu_master asm, rcatech_user_access_master aum where asm.is_active = 1 and asm.id = aum.submenu_master_id and aum.user_id = '1' and aum.menu_master_id = '".$params."'";
+        $querystring = "SELECT * FROM rcatech_submenu_master asm, rcatech_user_access_master aum where asm.is_active = 1 and asm.id = aum.submenu_master_id and aum.user_id = '5' and aum.menu_master_id = '".$params."'";
         $queryforpubid = $this->db->query($querystring);
 
         $result = $queryforpubid->result_array();
@@ -398,7 +398,7 @@ class User_master extends CI_Model{
 
     function getAccessforUserId($params){ 
         #$querystring = "SELECT asm.*,auam.add_rights,auam.edit_rights,auam.view_rights,auam.delete_rights FROM rcatech_submenu_master asm,rcatech_user_access_master auam where asm.is_active = 1 and asm.menu_master_id = '".$params['main_menus']."' and asm.id = auam.submenu_master_id and auam.user_id = '".$params['user_access_id']."'";
-       $querystring = "SELECT auam.add_rights,auam.edit_rights,auam.view_rights,auam.delete_rights from rcatech_user_access_master auam where menu_master_id = '".$params['main_menus']."' and submenu_master_id = '".$params['sub_menus']."' and user_id = '".$params['user_access_id']."'";
+        $querystring = "SELECT auam.add_rights,auam.edit_rights,auam.view_rights,auam.delete_rights from rcatech_user_access_master auam where menu_master_id = '".$params['main_menus']."' and submenu_master_id = '".$params['sub_menus']."' and user_id = '".$params['user_access_id']."'";
         $queryforpubid = $this->db->query($querystring);
 
         $result = $queryforpubid->result_array();
@@ -463,7 +463,7 @@ class User_master extends CI_Model{
 
     /*$querystring = "SELECT aeum.first_name,aeum.last_name,auam.submenu_master_id,auam.add_rights,auam.edit_rights,auam.view_rights,auam.delete_rights,asm.submenu_name,auam.user_id,aeum.employee_staff FROM rcatech_user_access_master auam,rcatech_employee_users_master aeum,rcatech_submenu_master asm WHERE auam.user_id != 1 and auam.user_id = aeum.id and asm.id = auam.submenu_master_id group by auam.user_id"; */
 
-       $querystring = "SELECT * from rcatech_employee_users_master";     
+       $querystring = "SELECT * from rcatech_employee_users_master order by id asc";     
 
 
         $queryforpubid = $this->db->query($querystring);
@@ -637,8 +637,10 @@ class User_master extends CI_Model{
     function getEmailidsFile(){ 
         #print_r($params);exit;
 
-        $querystring = "SELECT reum.office_email FROM rcatech_email_master rem left join rcatech_employee_users_master reum ON rem.user_id=reum.id 
-            WHERE rem.user_role in ('superadmin','admin','coordinator') and rem.user_id != '".$_SESSION['userId']."' and rem.user_branch = '".$_SESSION['branch_id']."' and rem.is_active = 1";
+        /*$querystring = "SELECT reum.office_email FROM rcatech_email_master rem left join rcatech_employee_users_master reum ON rem.user_id=reum.id 
+            WHERE rem.user_role in ('LEAD') and rem.user_id != '".$_SESSION['userId']."' and rem.user_branch = '".$_SESSION['branch_id']."' and rem.is_active = 1";*/
+
+       $querystring = "SELECT rem.email FROM  rcatech_engineerlist_master rem WHERE rem.role in ('LEAD') and rem.user_branch_id = '1' and rem.is_active = 1"; // ".$_SESSION['branch_id']."     
 
         $queryforpubid = $this->db->query($querystring);
 

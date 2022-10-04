@@ -173,12 +173,12 @@
 												<div class="row">
 													<div class="col-md-6">
 														<div class="form-group">
-															<label class="control-label col-md-3">Client Name*</label>
+															<label class="control-label col-md-3"><font color="red">Client Name*</font></label>
 															<div class="col-md-9">
 																<select class="form-control input-large select2me" data-placeholder="Select..." name="clients_name" id="clients_name">
 																	<option value="">Please Select</option>
 																	<?php foreach($clients_data as $rows) {  ?>
-																	<option value="<?php echo $rows['id']; ?>"><?php echo $rows['client_name']."  (".$rows['city'].")"; ?></option>
+																	<option value="<?php echo $rows['id']; ?>"><?php echo $rows['client_name']."  (".$rows['client_location'].")"; ?></option>
 																	<?php } ?>
 																</select>
 																<span for="clients_name" class="help-block"></span>
@@ -188,7 +188,7 @@
 													<!--/span-->
 													<div class="col-md-6">
 														<div class="form-group">
-															<label class="control-label col-md-3">File No*</label>
+															<label class="control-label col-md-3"><font color="red">File No*</font></label>
 															<div class="col-md-9">
 																<select class="form-control input-large select2me" data-placeholder="Select..." name="file_no" id="file_no">
 																	<option value="">Select</option>
@@ -211,7 +211,7 @@
 													</div>
 													<div class="col-md-6">
 														<div class="form-group">
-															<label class="control-label col-md-3">Call Date*</label>
+															<label class="control-label col-md-3"><font color="red">Call Date*</font></label>
 															<div class="col-md-9">
 																<input type="text" class="form-control" placeholder="" name="call_date" id="call_date" value="<?php echo date('d-m-Y'); ?>" style="width:25%" readonly>
 																<span for="call_date" class="help-block"></span>
@@ -226,12 +226,12 @@
 												<div class="row">
 													<div class="col-md-6">
 														<div class="form-group">
-															<label class="control-label col-md-3">End Client*</label>
+															<label class="control-label col-md-3"><font color="red">End Client*</font></label>
 															<div class="col-md-9">
 																<select class="form-control input-large select2me" data-placeholder="Select..." name="call_end_client" id="call_end_client">
 																	<option value="">Please Select</option>
 																	<?php foreach($clients_data as $rows) {  ?>
-																	<option value="<?php echo $rows['id']; ?>"><?php echo $rows['client_name']."  (".$rows['city'].")"; ?></option>
+																	<option value="<?php echo $rows['id']; ?>"><?php echo $rows['client_name']."  (".$rows['client_location'].")"; ?></option>
 																	<?php } ?>
 																</select>
 																<span for="call_end_client" class="help-block"></span>
@@ -242,7 +242,7 @@
 
 													<div class="col-md-6">
 														<div class="form-group">
-															<label class="control-label col-md-3">Manufacturer*</label>
+															<label class="control-label col-md-3"><font color="red">Manufacturer*</font></label>
 															<div class="col-md-9">
 																<select class="form-control input-large select2me" data-placeholder="Select..." name="call_manufacturer" id="call_manufacturer">
 																	<option value="">Please Select</option>
@@ -264,8 +264,8 @@
 															<div class="col-md-9">		
 																<select class="form-control input-large select2me" data-placeholder="Select..." name="call_vendor" id="call_vendor">
 																	<option value="">Please Select</option>
-																	<?php foreach($clients_data as $rows) {  ?>
-																	<option value="<?php echo $rows['id']; ?>"><?php echo $rows['client_name']."  (".$rows['city'].")"; ?></option>
+																	<?php foreach($vendor_data as $rows) {  ?>
+																	<option value="<?php echo $rows['id']; ?>"><?php echo $rows['vendor_name']; ?></option>
 																	<?php } ?>
 																</select>
 																<span for="call_vendor" class="help-block"></span>
@@ -275,7 +275,7 @@
 													<!--/span-->
 													<div class="col-md-6">
 														<div class="form-group">
-															<label class="control-label col-md-3">No of Days*</label>
+															<label class="control-label col-md-3"><font color="red">No of Days*</font></label>
 															<div class="col-md-9">
 																<input type="text" class="form-control" placeholder="" name="call_days" id="call_days" value="1" style="width:25%">
 																<span for="call_days" class="help-block"></span>
@@ -289,7 +289,47 @@
 												<div class="row">
 													<div class="col-md-6">
 														<div class="form-group">
-															<label class="control-label col-md-3">Inspection Schedule Date*</label>
+															<label class="control-label col-md-3"><font color="red">Assigned To Branch*</font></label>
+															<div class="col-md-6">
+																<select class="form-control" name="assigned_to_branch" id="assigned_to_branch">
+																<option value="">Select Branch</option>	
+																	<?php
+													                $rows = $branches_data;
+
+													                foreach($rows as $branches_data){ 
+													                	if ($_SESSION['branch_id']==$branches_data["id"]) {
+													                	echo '<option value='.$branches_data["id"].' selected>'.$branches_data["branch_name"].'</option>';		
+													                	} else {
+													                		echo '<option value='.$branches_data["id"].'>'.$branches_data["branch_name"].'</option>';
+													                	}
+													                }	
+																	?>
+																</select>
+																<span for="assigned_to_branch" class="help-block"></span>
+															</div>
+														</div>
+													</div>
+													<!--/span-->
+													<!--/span-->
+
+													<!--<div class="col-md-6">
+														<div class="form-group">
+															<label class="control-label col-md-3">State*</label>
+															<div class="col-md-6">
+																<select class="form-control" name="company_state" id="company_state">
+																<option value="">Select State</option>
+																</select>
+																<span for="company_state" class="help-block"></span>
+															</div>
+														</div>
+													</div>-->
+												</div>
+												<!--/row-->
+
+												<div class="row">
+													<div class="col-md-6">
+														<div class="form-group">
+															<label class="control-label col-md-3"><font color="red">Inspection Schedule Date*</font></label>
 															<div class="col-md-9">
 																<div class="input-group input-medium date date-picker" data-date-format="dd-mm-yyyy" data-date-start-date="-6m">
 																<input type="text" class="form-control" name="inspection_schedule_date" id="inspection_schedule_date" value="" readonly>
@@ -324,7 +364,7 @@
 												<div class="row">
 													<div class="col-md-6">
 														<div class="form-group">
-															<label class="control-label col-md-3">Country*</label>
+															<label class="control-label col-md-3"><font color="red">Country*</font></label>
 															<div class="col-md-6">
 																<select class="form-control" name="company_country" id="company_country">
 																<option value="">Select Country</option>	
@@ -346,7 +386,7 @@
 
 													<div class="col-md-6">
 														<div class="form-group">
-															<label class="control-label col-md-3">State*</label>
+															<label class="control-label col-md-3"><font color="red">State*</font></label>
 															<div class="col-md-6">
 																<select class="form-control" name="company_state" id="company_state">
 																<option value="">Select State</option>
@@ -361,7 +401,7 @@
 												<div class="row">
 													<div class="col-md-6">
 														<div class="form-group">
-															<label class="control-label col-md-3">Inspection City*</label>
+															<label class="control-label col-md-3"><font color="red">Inspection City*</font></label>
 															<div class="col-md-9">
 																<select class="form-control" name="company_city" id="company_city">
 																<option value="">Select City</option>
@@ -400,35 +440,6 @@
 													<!--/span-->	
 													<div class="col-md-6">
 														<div class="form-group">
-															<label class="control-label col-md-3">RFI Date</label>
-															<div class="col-md-9">
-																<div class="input-group input-medium date date-picker" data-date-format="dd-mm-yyyy" data-date-start-date="-6m">
-																<input type="text" class="form-control" name="rfi_date" id="rfi_date" value="" readonly>
-																<span class="input-group-btn">
-																<button class="btn default" type="button"><i class="fa fa-calendar"></i></button>
-																</span>
-																</div>
-																<span for="rfi_date" class="help-block"></span>
-															</div>
-														</div>
-													</div>
-													
-												</div>
-												<!--/row-->	
-
-												<div class="row">
-													<div class="col-md-6">
-														<div class="form-group">
-															<label class="control-label col-md-3">RFI No</label>
-															<div class="col-md-9">
-																<input type="text" class="form-control" placeholder="" name="rfi_no" id="rfi_no" value="" style="width:25%">
-																<span for="rfi_no" class="help-block"></span>
-															</div>
-														</div>
-													</div>
-													<!--/span-->
-													<div class="col-md-6">
-														<div class="form-group">
 															<label class="control-label col-md-3">NABCBFLAG (Yes/No) </label>
 															<div class="col-md-6">		
 																<input type="checkbox" class="form-control" placeholder="" name="call_nabcb_flag" id="call_nabcb_flag" value="1" style="width:25%">
@@ -438,7 +449,7 @@
 													</div>
 													
 												</div>
-												<!--/row-->
+												<!--/row-->	
 
 												<div class="row">
 													<div class="col-md-6">
@@ -457,6 +468,20 @@
 														</div>
 													</div>
 													<!--/span-->
+													<!--<div class="col-md-6">
+														<div class="form-group">
+															<label class="control-label col-md-3">NABCBFLAG (Yes/No) </label>
+															<div class="col-md-6">		
+																<input type="checkbox" class="form-control" placeholder="" name="call_nabcb_flag" id="call_nabcb_flag" value="1" style="width:25%">
+																<span for="call_nabcb_flag" class="help-block"></span>
+															</div>
+														</div>
+													</div>-->
+													
+												</div>
+												<!--/row-->
+
+												<div class="row">
 													<div class="col-md-6">
 														<div class="form-group">
 															<label class="control-label col-md-3">Rate</label>
@@ -466,11 +491,7 @@
 															</div>
 														</div>
 													</div>
-													
-												</div>
-												<!--/row-->	
-
-												<div class="row">
+													<!--/span-->
 													<div class="col-md-6">
 														<div class="form-group">
 															<label class="control-label col-md-3">Rate Confirmation</label>
@@ -481,7 +502,11 @@
 															</div>
 														</div>
 													</div>
-													<!--/span-->
+													
+												</div>
+												<!--/row-->	
+
+												<div class="row">
 													<div class="col-md-6">
 														<div class="form-group">
 															<label class="control-label col-md-3">Budget Amount </label>
@@ -491,9 +516,48 @@
 															</div>
 														</div>
 													</div>
+													<!--/span-->
+													<!--<div class="col-md-6">
+														<div class="form-group">
+															<label class="control-label col-md-3">Budget Amount </label>
+															<div class="col-md-9">
+																<input type="text" class="form-control" placeholder="" name="call_budget" id="call_budget" value="" style="width:25%">
+																<span for="call_budget" class="help-block"></span>
+															</div>
+														</div>
+													</div>-->
 													
 												</div>
 												<!--/row-->
+
+												<?php /*<div class="row">
+													<div class="col-md-6">
+														<div class="form-group">
+															<label class="control-label col-md-3">RFI Date</label>
+															<div class="col-md-9">
+																<div class="input-group input-medium date date-picker" data-date-format="dd-mm-yyyy" data-date-start-date="-6m">
+																<input type="text" class="form-control" name="rfi_date" id="rfi_date" value="" readonly>
+																<span class="input-group-btn">
+																<button class="btn default" type="button"><i class="fa fa-calendar"></i></button>
+																</span>
+																</div>
+																<span for="rfi_date" class="help-block"></span>
+															</div>
+														</div>
+													</div>
+													<!--/span-->
+													<div class="col-md-6">
+														<div class="form-group">
+															<label class="control-label col-md-3">RFI No</label>
+															<div class="col-md-9">
+																<input type="text" class="form-control" placeholder="" name="rfi_no" id="rfi_no" value="" style="width:25%">
+																<span for="rfi_no" class="help-block"></span>
+															</div>
+														</div>
+													</div>
+													
+												</div>*/ ?>
+												<!--/row-->	
 
 												<!--<div class="row">
 													<div class="col-md-6">
@@ -630,7 +694,7 @@
 																	 <span for="itemsize" class="help-block" style="color:red"></span>
 																</td>				
 																<td>
-																	<input type="text" class="form-control input-small itemtotalvalue" placeholder="" name="itemtotalvalue[]" id="itemtotalvalue" value="" required>
+																	<input type="text" class="form-control input-small itemtotalvalue" placeholder="" name="itemtotalvalue[]" id="itemtotalvalue" value="">
 																	 <span for="itemtotalvalue" class="help-block" style="color:red"></span>
 																</td>
 																<td>

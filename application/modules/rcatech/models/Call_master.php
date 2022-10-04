@@ -11,10 +11,10 @@ class Call_master extends CI_Model{
 
         $querystring = "SELECT rcgt.*,rft.file_no,rcm.client_name,rcm.city_id,rmm.manufacturer_name manufacturer_info,rcm1.client_name end_client_info FROM rcatech_callgeneration_transaction rcgt
         left join rcatech_fileregister_transaction rft On rcgt.file_id = rft.id
-        left join rcatech_client_master rcm On rcgt.file_id = rcm.id
+        left join rcatech_client_master rcm On rcgt.client_id = rcm.id
         left join rcatech_manufacturer_master rmm On rcgt.manufacturer_name = rmm.id
         left join rcatech_client_master rcm1 On rcgt.end_client_name = rcm1.id
-        WHERE rcgt.user_comp_id = '".$_SESSION['comp_id']."' and rcgt.user_branch_id = '".$_SESSION['branch_id']."' and rcgt.op_year = '".$_SESSION['operatingyear']."'";
+        WHERE rcgt.user_comp_id = '".$_SESSION['comp_id']."' and rcgt.user_branch_id = '".$_SESSION['branch_id']."' and rcgt.op_year = '".$_SESSION['operatingyear']."' OR find_in_set('".$_SESSION['branch_id']."',rcgt.assigned_to_branch)";
         $queryforpubid = $this->db->query($querystring);
 
         $result = $queryforpubid->result_array();
@@ -35,11 +35,13 @@ class Call_master extends CI_Model{
 
     function getCallGenerationByCallId($call_id,$file_no){ 
 
-        $querystring = "SELECT rct.*,rcm.client_name,rft.file_no,rmm.manufacturer_name manufacturer,rcm1.client_name end_user  FROM rcatech_callgeneration_transaction rct 
+        $querystring = "SELECT rct.*,rcm.client_name,rcm.client_location,rft.file_no,rmm.manufacturer_name manufacturer,rcm1.client_name end_user,rcm1.client_location end_user_location,reum.emp_code,rc.name city_name  FROM rcatech_callgeneration_transaction rct 
         left join rcatech_client_master rcm on rcm.id = rct.client_id
         left join rcatech_fileregister_transaction rft on rft.id = rct.file_id
         left join rcatech_manufacturer_master rmm on rmm.id = rct.manufacturer_name
-        left join rcatech_client_master rcm1 on rcm.id = rct.end_client_name
+        left join rcatech_client_master rcm1 on rcm1.id = rct.end_client_name
+        left join rcatech_employee_users_master reum on reum.id = rct.entry_user_id
+        left join rcatech_cities rc on rc.id = rct.inspection_city
         WHERE rct.id = '".$call_id."' and rct.file_id = '".$file_no."' Order By rct.call_id desc limit 1";
         $queryforpubid = $this->db->query($querystring);
 
@@ -88,8 +90,9 @@ class Call_master extends CI_Model{
     if(empty($data))
       return FALSE;
 
-    $result = array('client_id'=>$data['clients_name'],'file_id'=>$data['file_no'],'file_classification'=>$data['file_class'],'call_id'=>$data['call_id'],'call_no'=>@$data['call_no'],'call_date'=>@$data['call_date'],'call_days'=>$data['call_days'],'call_rfidays'=>$data['rfi_date'],'call_rfino'=>$data['rfi_no'],'country_id'=>$data['company_country'],'state_id'=>$data['company_state'],'inspection_city'=>$data['company_city'],'inspection_location'=>$data['inspection_location'],'manufacturer_name'=>$data['call_manufacturer'],'vendor_name'=>$data['call_vendor'],'end_client_name'=>$data['call_end_client'],'nabcb_flag'=>@$data['call_nabcb_flag'],'rate_type'=>$data['call_rate_type'],'call_rate'=>$data['call_rate'],'call_budget'=>$data['call_budget'],'po_status'=>$data['call_po_type'],'inspection_schedule_date'=>$data['inspection_schedule_date'],'entry_user_id'=>$data['user_id'],'entry_date'=>$data['dt'],'is_active'=>1,'user_comp_id'=>$data['user_comp_id'],'user_branch_id'=>$data['user_branch_id'],'op_year'=>@$_SESSION['operatingyear']); //'inspection_schedule_time'=>$data['inspection_schedule_time']
+    $result = array('client_id'=>$data['clients_name'],'file_id'=>$data['file_no'],'file_classification'=>$data['file_class'],'call_id'=>$data['call_id'],'call_no'=>@$data['call_no'],'call_date'=>@$data['call_date'],'call_days'=>$data['call_days'],'assigned_to_branch'=>$data['assigned_to_branch'],'country_id'=>$data['company_country'],'state_id'=>$data['company_state'],'inspection_city'=>$data['company_city'],'inspection_location'=>$data['inspection_location'],'manufacturer_name'=>$data['call_manufacturer'],'vendor_name'=>$data['call_vendor'],'end_client_name'=>$data['call_end_client'],'nabcb_flag'=>@$data['call_nabcb_flag'],'rate_type'=>$data['call_rate_type'],'call_rate'=>$data['call_rate'],'call_budget'=>$data['call_budget'],'po_status'=>$data['call_po_type'],'inspection_schedule_date'=>$data['inspection_schedule_date'],'entry_user_id'=>$data['user_id'],'entry_date'=>$data['dt'],'is_active'=>1,'user_comp_id'=>$data['user_comp_id'],'user_branch_id'=>$data['user_branch_id'],'op_year'=>@$_SESSION['operatingyear']); //'inspection_schedule_time'=>$data['inspection_schedule_time']
     //print_r($result);exit;
+    //'call_rfidays'=>$data['rfi_date'],'call_rfino'=>$data['rfi_no'],
     $this->db->insert('rcatech_callgeneration_transaction',$result);
     $call_id = $this->db->insert_id();
 
@@ -109,7 +112,7 @@ class Call_master extends CI_Model{
 
     function getFCallItemDetailsById($id){ 
 
-        $querystring = "SELECT rim.item_name,rism.subitem_name,rcd.item_schedule_date,rum.unit_name FROM rcatech_callitem_details rcd
+        $querystring = "SELECT rim.item_name,rism.subitem_name,rcd.item_quantity,rcd.item_schedule_date,rum.unit_name FROM rcatech_callitem_details rcd
         left join rcatech_item_master rim on rim.id = rcd.item_id
         left join rcatech_item_subtype_master rism on rism.id = rcd.item_subtype_id
         left join rcatech_unit_master rum on rum.id = rcd.item_unit
@@ -136,6 +139,17 @@ class Call_master extends CI_Model{
 
         $querystring = "SELECT * FROM rcatech_callgeneration_docs       
         WHERE call_id = '".$id."'";
+        $queryforpubid = $this->db->query($querystring);
+
+        $result = $queryforpubid->result_array();
+        return $result;
+
+    }
+
+    function getAllCallDocDetailsById2($id){ 
+
+        $querystring = "SELECT * FROM rcatech_callgeneration_docs       
+        WHERE call_id = '".$id."' and document_name != 'RATE CONFIRMATION'";
         $queryforpubid = $this->db->query($querystring);
 
         $result = $queryforpubid->result_array();
@@ -246,12 +260,21 @@ class Call_master extends CI_Model{
 
     }
 
-    function getEngineerdataByFlag($params){
-        $querystring2 = "SELECT reum.id,reum.first_name,reum.last_name FROM rcatech_engineerlist_master rem left join rcatech_employee_users_master reum On rem.user_id = reum.id WHERE nabcb_flag = '".$params."'";
+    function getEngineerdataByFlag($params){ //$params
+        /*$querystring2 = "SELECT reum.id,reum.first_name,reum.last_name FROM rcatech_engineerlist_master rem left join rcatech_employee_users_master reum On rem.user_id = reum.id WHERE nabcb_flag = '".$params."'";*/
+
+        $querystring2 = "SELECT * from rcatech_engineerlist_master WHERE nabcb_flag = '".$params."' Order By first_name asc";
         $queryforpubid2 = $this->db->query($querystring2);
         $result2 = $queryforpubid2->result_array();
         return $result2;
     } 
+
+    function getEngineerdataByNoFlag(){ //$params
+        $querystring2 = "SELECT * from rcatech_engineerlist_master WHERE is_active = '1' Order By first_name asc";
+        $queryforpubid2 = $this->db->query($querystring2);
+        $result2 = $queryforpubid2->result_array();
+        return $result2;
+    }
 
     function getEngineerdataByFlagNew($params){
         $querystring2 = "SELECT reum.id,reum.first_name,reum.last_name FROM rcatech_engineerlist_master rem left join rcatech_employee_users_master reum On rem.user_id = reum.id WHERE nabcb_flag = '".$params."'";
@@ -271,7 +294,7 @@ class Call_master extends CI_Model{
     public function addCallScheduleData($data){
         //print_r($data);exit;
         for ($x = 0; $x < count($data['engineer_data']); $x++) {
-            $result = array('file_id'=>$data['file_id'],'call_id'=>$data['call_id'],'call_from_date'=>$data['call_from_date'],'call_to_date'=>$data['call_to_date'],'engineer_id'=>$data['engineer_data'][$x],'status'=>'Scheduled','entry_user_id'=>$data['user_id'],'entry_date'=>$data['dt'],'is_active'=>1,'user_comp_id'=>$data['user_comp_id'],'user_branch_id'=>$data['user_branch_id']);
+            $result = array('file_id'=>$data['file_id'],'call_id'=>$data['call_id'],'call_from_date'=>$data['call_from_date'],'call_to_date'=>$data['call_to_date'],'call_start_time'=>$data['dt'],'call_end_time'=>$data['dt'],'engineer_id'=>$data['engineer_data'][$x],'status'=>'Scheduled','entry_user_id'=>$data['user_id'],'entry_date'=>$data['dt'],'is_active'=>1,'user_comp_id'=>$data['user_comp_id'],'user_branch_id'=>$data['user_branch_id'],'op_year'=>@$_SESSION['operatingyear']);
 
             //print_r($result);exit;
             $this->db->insert('rcatech_call_schedule',$result);
@@ -315,11 +338,26 @@ class Call_master extends CI_Model{
 
     function updateCallScheduleComp($id,$st,$fid){ 
             //echo $id."==".$st."==".$fid;exit;
-            $result = array('status'=> $st);
+            $dt = date('Y-m-d H:i:s');
+            if ($st=='Inspection Started') {
+            $result = array('status'=> $st,'call_start_time'=> $dt);
+            }
+
+            if ($st=='Report Pending') {
+            $result = array('status'=> $st,'call_end_time'=> $dt);
+            }
+
+            if ($st=='Scheduled') {
+            $result = array('status'=> $st,'call_start_time'=> $dt);
+            }
+
+            if ($st=='Cancelled') {
+            $result = array('status'=> $st,'call_start_time'=> $dt);
+            }
 
             //print_r($result);exit;
             $this->db->where('call_id', $id);
-            $this->db->limit(1);
+            //$this->db->limit(1);
             $this->db->update('rcatech_call_schedule',$result);
 
             if ($result) {
@@ -328,7 +366,7 @@ class Call_master extends CI_Model{
                 //print_r($result);exit;
                 $this->db->where('call_id', $id);
                 $this->db->where('file_id', $fid);
-                $this->db->limit(1);
+                //$this->db->limit(1);
                 $this->db->update('rcatech_callgeneration_transaction',$result2);
             }
  
@@ -350,16 +388,33 @@ class Call_master extends CI_Model{
 
     }
 
-    function getCallScheduleAllDataByCallid($params){ 
+    function getCallScheduleAllDataByCallid($id,$fid){ 
 
-        $querystring = "SELECT rcs.*,rft.file_no,rcgt.call_no,reum.first_name,reum.last_name,rcm.client_name,rcgt.inspection_location,rmm.manufacturer_name manufacturer_info,rcm1.client_name end_user_info  FROM  rcatech_call_schedule rcs
+        $querystring = "SELECT rcs.*,rft.file_no,rcgt.call_no,rem.first_name,rem.last_name,rem.email,rcm.client_name,rcm.client_location,rcgt.inspection_location,rmm.manufacturer_name manufacturer_info,rcm1.client_name end_user_info,rcm1.client_location end_user_location,reum.emp_code,rc.name city_name  FROM  rcatech_call_schedule rcs
         left join rcatech_fileregister_transaction rft On rcs.file_id = rft.id
         left join rcatech_callgeneration_transaction rcgt On rcgt.id = rcs.call_id
-        left join rcatech_employee_users_master reum On reum.id = rcs.engineer_id
+        left join rcatech_engineerlist_master rem On rem.id = rcs.engineer_id
         left join rcatech_client_master rcm On rcgt.client_id = rcm.id
         left join rcatech_manufacturer_master rmm On rcgt.manufacturer_name = rmm.id
         left join rcatech_client_master rcm1 On rcgt.end_client_name = rcm1.id
-        WHERE rcs.call_id = '".$params."' and rcgt.user_comp_id = '".$_SESSION['comp_id']."' and rcgt.user_branch_id = '".$_SESSION['branch_id']."' and rcgt.op_year = '".$_SESSION['operatingyear']."'";
+        left join rcatech_employee_users_master reum on reum.id = rcs.entry_user_id
+        left join rcatech_cities rc on rc.id = rcgt.inspection_city
+        WHERE rcs.call_id = '".$id."' and rcs.file_id = '".$fid."' and rcs.user_comp_id = '".$_SESSION['comp_id']."' and rcs.user_branch_id = '".$_SESSION['branch_id']."' and rcs.op_year = '".$_SESSION['operatingyear']."'";
+        $queryforpubid = $this->db->query($querystring);
+
+        $result = $queryforpubid->result_array();
+        return $result;
+
+    }
+
+    function getItemDetailsByCallId($params){  
+
+        $querystring = "SELECT rcd.*,rim.item_name,rism.subitem_name,rum.unit_name  FROM  rcatech_callitem_details rcd
+        left join rcatech_item_master rim On rcd.item_id = rim.id
+        left join rcatech_item_subtype_master rism On rcd.item_subtype_id = rim.id
+        left join rcatech_item_subtype_master rism1 On rism1.item_id = rim.id
+        left join rcatech_unit_master rum On rcd.item_unit = rum.id
+        WHERE rcd.call_id = '".$params."' limit 1";
         $queryforpubid = $this->db->query($querystring);
 
         $result = $queryforpubid->result_array();
@@ -420,9 +475,51 @@ class Call_master extends CI_Model{
 
    function getEngineerListdata(){ 
 
-        $querystring = "SELECT rem.*,reum.first_name,reum.last_name FROM  rcatech_engineerlist_master rem left join
+        /*$querystring = "SELECT rem.*,reum.first_name,reum.last_name FROM  rcatech_engineerlist_master rem left join
         rcatech_employee_users_master reum on reum.id = rem.user_id
-        WHERE rem.is_active = '1'";
+        WHERE rem.is_active = '1'";*/
+        $querystring = "SELECT rem.* FROM rcatech_engineerlist_master rem WHERE rem.is_active = '1'";
+        $queryforpubid = $this->db->query($querystring);
+
+        $result = $queryforpubid->result_array();
+        return $result;
+
+    }
+
+    function getEmailidsCallGenerate($branch_id){ 
+       $querystring = "SELECT reum.office_email email,reum.first_name FROM  rcatech_employee_users_master reum WHERE reum.employee_staff in ('TECHNICAL HEAD','TECHNICAL ADMIN','TECHNICAL USER','SURVEYOR HEAD') and reum.branch_id = '".$branch_id."' and reum.is_active = 1"; // ".$_SESSION['branch_id']."     
+
+        $queryforpubid = $this->db->query($querystring);
+
+        $result = $queryforpubid->result_array();
+        return $result;
+    }
+
+
+    function getEmailidsCallEmails(){ 
+       $querystring = "SELECT reum.office_email,reum.first_name FROM  rcatech_employee_users_master reum WHERE reum.employee_staff in ('TECHNICAL HEAD','TECHNICAL ADMIN','TECHNICAL USER') and reum.branch_id = '".$_SESSION['branch_id']."' and reum.is_active = 1"; // ".$_SESSION['branch_id']."     
+
+        $queryforpubid = $this->db->query($querystring);
+
+        $result = $queryforpubid->result_array();
+        return $result;
+    }
+
+
+    function getCallScheduleComp($call_id,$st,$file_id){ 
+       $querystring = "SELECT * FROM  rcatech_call_schedule WHERE call_id = '".$call_id."' and file_id = '".$file_id."' and status = '".$st."'"; // ".$_SESSION['branch_id']."     
+
+        $queryforpubid = $this->db->query($querystring);
+
+        $result = $queryforpubid->result_array();
+        return @$result[0];
+    }
+
+
+    function getReportNoByBranch() { 
+
+        $querystring = 'SELECT report_id FROM rcatech_reportgeneration_register arr Where arr.user_comp_id = "'.$_SESSION['comp_id'].'" and arr.user_branch_id = "'.$_SESSION['branch_id'].'" and arr.op_year = "'.$_SESSION['operatingyear'].'" Order By report_id desc limit 1';
+
         $queryforpubid = $this->db->query($querystring);
 
         $result = $queryforpubid->result_array();
@@ -431,28 +528,6 @@ class Call_master extends CI_Model{
     }
 
 
-    public function Addmanufacturer($data){
-    if(empty($data))
-      return FALSE;
-
-    $result = array('manufacturer_name'=>$data['manufacturer_name'],'entry_user_id'=>$data['user_id'],'entry_date'=>$data['dt'],'is_active'=>1,'user_comp_id'=>$data['user_comp_id'],'user_branch_id'=>$data['user_branch_id'],'op_year'=>@$_SESSION['operatingyear']);
-    //print_r($result);exit;
-    $this->db->insert('rcatech_manufacturer_master',$result);
-    $call_id = $this->db->insert_id();
-
-    return $call_id;
-
-   }
-
-   function getManufacturerdata(){ 
-
-        $querystring = "SELECT * FROM  rcatech_manufacturer_master";
-        $queryforpubid = $this->db->query($querystring);
-
-        $result = $queryforpubid->result_array();
-        return $result;
-
-    }
 
  
 

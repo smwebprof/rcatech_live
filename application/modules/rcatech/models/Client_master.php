@@ -59,9 +59,11 @@ class Client_master extends CI_Model{
 
     }
 
-     function getClientdataByBranchid($params){
+     function getClientdataByBranchid(){ //$params
         
-        $querystring = "SELECT rcm.id,rcm.client_name,rcm.address,rcm.city_id,rcm.state_id,rcm.country_id,rct.name city FROM rcatech_client_master rcm left join rcatech_cities rct on rcm.city_id=rct.id  where (rcm.client_type = 'Client' or rcm.client_type is null or rcm.client_type = 'Foreign') and rcm.branch_id =".$params." and rcm.is_active = 1 order by rcm.client_name";
+        $querystring = "SELECT rcm.id,rcm.client_name,rcm.client_location,rcm.address,rcm.city_id,rcm.state_id,rcm.country_id,rct.name city FROM rcatech_client_master rcm left join rcatech_cities rct on rcm.city_id=rct.id  where rcm.is_active = 1 order by rcm.client_name";
+
+        //$querystring = "SELECT rcm.id,rcm.client_name,rcm.address,rcm.city_id,rcm.state_id,rcm.country_id,rct.name city FROM rcatech_client_master rcm left join rcatech_cities rct on rcm.city_id=rct.id  where (rcm.client_type = 'Client' or rcm.client_type is null or rcm.client_type = 'Foreign') and rcm.branch_id =".$params." and rcm.is_active = 1 order by rcm.client_name";
         #echo $querystring;exit;
 
         $queryforpubid = $this->db->query($querystring);

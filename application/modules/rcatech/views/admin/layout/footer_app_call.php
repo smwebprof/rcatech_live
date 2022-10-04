@@ -71,6 +71,8 @@
            Custom.initAddItemmaster();
            Custom.initAddSubtypeItemmaster();
            Custom.initAddManufacturer();
+           Custom.initAddVendor();
+           Custom.initReportGen();
            //FormFileUpload.init();
            TableAdvanced.init();
 
@@ -146,6 +148,7 @@
         $('#clients_name').change(function(){
             var client_id = $('#clients_name').val();
             //alert(client_id);
+            $('#file_no').html('');
             if(client_id != '')
              {
                $.ajax({

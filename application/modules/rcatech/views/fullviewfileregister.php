@@ -179,38 +179,6 @@
 							</tr>
 							<tr>
 								<td>
-									 <strong>SAP No</strong>
-								</td>
-								<td>
-									<?php echo $file_info['sap_no']; ?>
-								</td>
-							</tr>
-							<tr>
-								<td>
-									 <strong>SAP Date</strong>
-								</td>
-								<td>
-									<?php echo $file_info['sap_date']; ?>
-								</td>
-							</tr>
-							<tr>
-								<td>
-									 <strong>Ref No</strong>
-								</td>
-								<td>
-									<?php echo $file_info['ref_no']; ?>
-								</td>
-							</tr>
-							<tr>
-								<td>
-									 <strong>Visit Required</strong>
-								</td>
-								<td>
-									<?php echo $file_info['visit_date']; ?>
-								</td>
-							</tr>
-							<tr>
-								<td>
 									 <strong>Work Type</strong>
 								</td>
 								<td>

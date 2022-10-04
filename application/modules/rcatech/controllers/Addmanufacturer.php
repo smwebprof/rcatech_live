@@ -31,7 +31,7 @@ class Addmanufacturer extends MX_Controller {
         $this->load->model('branch_master'); 
         $this->load->model('user_master');
         $this->load->model('Department_master');
-        $this->load->model('Call_master');
+        $this->load->model('General_master');
         $this->load->helper('form');
 
         #$result = $this->company_master->getRows();
@@ -45,7 +45,7 @@ class Addmanufacturer extends MX_Controller {
         	$_POST['user_branch_id'] = @$_SESSION['branch_id'];
 
         	#print_r($this->input->post());exit;
-        	$resultdata = $this->Call_master->Addmanufacturer($this->input->post());
+        	$resultdata = $this->General_master->Addmanufacturer($this->input->post());
 
         	########################### Log Activity ######################################
             $this->load->model('Activity_master');
@@ -73,12 +73,12 @@ class Addmanufacturer extends MX_Controller {
 
 		} else { 
 
-			$engineers_data = $this->Call_master->getAllEngineerdata();
+			//$engineers_data = $this->General_master->getAllEngineerdata();
         	//print_r($engineers_data);exit;
 
 			$data['title'] = 'RCAinet Tech - Addmanufacturer';
-			$data['engineers_data'] = $engineers_data;
-			$data['layout_body']='Addmanufacturer';
+			//$data['engineers_data'] = $engineers_data;
+			$data['layout_body']='addmanufacturer';
  	
 
  			$this->load->view('admin/layout/main_app_call', $data);

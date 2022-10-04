@@ -101,7 +101,7 @@ $master_menu_users = $this->user_master->getMainusermenusParent();
 				<?php 
 			    }
 				?>
-				<?php if ($_SESSION['employee_staff']=='Admin') { ?>
+				<?php if ($_SESSION['employee_staff']=='TECHNICAL ADMIN') { ?>
 				<li class="mega-menu-dropdown">
 					<a href="#" data-hover="dropdown" data-close-others="true" href="" class="dropdown-toggle">
 						 Masters <i class="fa fa-angle-down"></i>

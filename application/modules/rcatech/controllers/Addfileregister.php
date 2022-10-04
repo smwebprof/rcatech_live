@@ -35,6 +35,7 @@ class Addfileregister extends MX_Controller {
 		$this->load->model('Activity_master');
 		$this->load->model('User_master');
 		$this->load->model('company_master');
+		$this->load->model('Call_master');
 
 		$user = $_SESSION['fname']." ".$_SESSION['lname'];
 
@@ -93,6 +94,7 @@ class Addfileregister extends MX_Controller {
         		$email_file_date = date('d-m-Y',strtotime($_POST['file_date']));
         		$email_file_user = $user;
         		$email_client_name = $file_details[0]['client_name'];
+        		$email_client_location = $file_details[0]['client_location'];
         		$email_filesource = $file_details[0]['source_info'];
         		$email_worktype = $file_details[0]['work_name'];
 
@@ -125,7 +127,7 @@ class Addfileregister extends MX_Controller {
 			    			<tr><td align="left"><b>FILE NO</b></td><td align="left">'.$email_file_no.'</td></tr>
 			    			<tr><td align="left"><b>CREATED ON</b></td><td align="left">'.$email_file_date.'</td></tr>
 			    			<tr><td align="left"><b>CREATED BY</b></td><td align="left">'.$email_file_user.'</td></tr>
-			    			<tr><td align="left"><b>CLIENT NAME</b></td><td align="left">'.$email_client_name.'</td></tr>
+			    			<tr><td align="left"><b>CLIENT NAME</b></td><td align="left">'.$email_client_name.', '.$email_client_location.'</td></tr>
 			    			<tr><td align="left"><b>FILE SOURCE</b></td><td align="left">'.$email_filesource.'</td></tr>
 			    			<tr><td align="left"><b>WORK TYPE</b></td><td align="left">'.$email_worktype.'</td></tr>
 			    			</table>';      		 
@@ -135,18 +137,19 @@ class Addfileregister extends MX_Controller {
 
 			    $file_email_report .= '<br><b>NOTE: This is a system generated mail. Please do not reply</b><br><br>';
 
-			    //echo $file_email_report;exit;
+			    echo $file_email_report;exit;
 
 			    $this->email->initialize($config);
 
 			    $this->email->from($config['smtp_user'], $config['smtp_from_name']);
 			    $this->email->to($_SESSION['user_email']);  
 
-			    $getEmailIds = $this->User_master->getEmailidsFile();
+			    $call_lead_emails_cc = $this->Call_master->getEmailidsCallEmails();
+						//print_r($call_lead_emails_cc);exit;
 
-	        	foreach ($getEmailIds as $rows) {
-	        		$email_cc[] = $rows['office_email'];
-	        	}
+			    foreach ($call_lead_emails_cc as $rows) {
+			        $email_cc[] = $rows['office_email'];
+			    }
 	        	$this->email->cc($email_cc);
 
 	        	$this->email->subject($subject);
@@ -174,7 +177,7 @@ class Addfileregister extends MX_Controller {
 		$currency_data = $this->General_master->getCurrencyData();
 		$work_type_data = $this->General_master->getWorkTypeData();
 		$category_data = $this->General_master->getCatgoryData();
-		$clients_data = $this->Client_master->getClientdataByBranchid($_SESSION['branch_id']);
+		$clients_data = $this->Client_master->getClientdataByBranchid(); //$_SESSION['branch_id']
 		//print_r($clients_data);exit;
 		$countries = $this->company_master->getCountries();
         //print_r($countries);exit;

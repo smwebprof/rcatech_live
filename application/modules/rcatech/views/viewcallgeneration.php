@@ -81,7 +81,10 @@
 								<i class="fa fa-user"></i>View Call Generation Register
 							</div>
 							<div class="actions">
-								<?php if ($access_right['add_rights'] == 1) { ?>
+								<?php #if ($access_right['add_rights'] == 1) { ?>
+								<?php 	
+								$emp_status = array('SURVEYOR HEAD','EMPLOYEE'); 
+								if (!in_array($_SESSION['employee_staff'], $emp_status)) { ?>
 								<a href="<?php echo BASE_PATH; ?>Callgenerationregister" class="btn blue">
 									<i class="fa fa-pencil"></i> New Call Generation 
 								</a>
@@ -119,59 +122,8 @@
 						</div>
 
 						<div class="portlet-body">
-							<div class="table-toolbar">
-								<div class="btn-group">
-									<label class="control-label col-md-3">From Date</label>
-									<div class="input-group input-medium date date-picker" data-date-format="dd-mm-yyyy" data-date-start-date="-6m">
-									<input type="text" class="form-control" name="file_from_date" id="file_from_date" value="<?php if (@$file_from_date) { echo $file_from_date; } /* else { echo date('d-m-Y'); }*/ ?>"readonly>
-									<span for="file_date" class="help-block"></span>
-									<span class="input-group-btn">
-									<button class="btn default" type="button"><i class="fa fa-calendar"></i></button>
-									</span>
-									</div>
-								</div>
-								<div class="btn-group">
-									<label class="control-label col-md-3">To Date</label>
-									<div class="input-group input-medium date date-picker" data-date-format="dd-mm-yyyy" data-date-start-date="-6m">
-									<input type="text" class="form-control" name="file_To_date" id="file_To_date" value="<?php if (@$file_To_date) { echo $file_To_date; } /* else { echo date('d-m-Y'); } */ ?>"readonly>
-									<span for="file_date" class="help-block"></span>
-									<span class="input-group-btn">
-									<button class="btn default" type="button"><i class="fa fa-calendar"></i></button>
-									</span>
-									</div>
-								</div>
-								<div class="btn-group">
-									<label class="control-label col-md-6">Status</label>
-									<div class="input-group">
-									<select class="form-control" id="status" name="status">
-										<option value ="">Select</option>
-										<option value ="Pending" <?php if (@$status == 'Pending') { echo 'selected'; } ?>>Pending</option>
-										<option value ="Running" <?php if (@$status == 'Running') { echo 'selected'; } ?>>Running</option>
-										<option value ="Invoiced" <?php if (@$status == 'Invoiced') { echo 'selected'; } ?>>Invoiced</option>
-										<option value ="Completed" <?php if (@$status == 'Completed') { echo 'selected'; } ?>>Completed</option>
-										<option value ="Cancelled" <?php if (@$status == 'Cancelled') { echo 'selected'; } ?>>Cancel</option>
-									</select>
-									</div>							
-								</div>&nbsp;&nbsp;&nbsp;
-								<div class="btn-group">
-									<?php /*<label class="control-label col-md-6">Vessel Name</label>*/ ?>
-									<div class="input-group">
-									<select class="form-control input-medium select2me" data-placeholder="Select..." name="vessel_name" id="vessel_name">
-										<option value ="">Select Work Order</option>
-										<?php	
-										$rows = $work_types;
-										foreach($rows as $types){
-											echo '<option value="'.$types["work_name"].'">'.$types["work_name"].'</option>';
-										}	
-										?>
-									</select>
-									</div>							
-								</div>
-								<!--<div class="btn-group">
-									<button type="submit" class="btn green">Submit</button>
-								</div>-->
-							</div>
-							<div class="table-toolbar">
+							
+							<?php /*<div class="table-toolbar">
 								<div class="btn-group">
 									<table>
 										<tr>
@@ -222,7 +174,7 @@
 								<div class="btn-group">
 									<button type="submit" class="btn yellow" name="submit" value="excel">View Excel Report</button>
 								</div>
-							</div>
+							</div>*/ ?>
 
 							<table class="table table-striped table-bordered table-hover" id="sample_2">
 				              <thead>
@@ -270,6 +222,11 @@
 				                <?php if ($access_right['edit_rights'] == 1) { ?>
 				                <th>
 				                   Call Cancel
+				                </th>
+				                <?php } ?>
+				                <?php if ($access_right['edit_rights'] == 1) { ?>
+				                <th>
+				                   Add Inspector To Call
 				                </th>
 				                <?php } ?>
 				                <?php /*if ($this->data['access_right']['delete_rights'] == 1) { ?>
@@ -324,7 +281,7 @@
 					                </td>
 					                <?php if ($access_right['edit_rights'] == 1) { ?>
 					                <td>
-					                  <?php  $file_status = array('Scheduled','Completed','Cancelled'); ?>
+					                  <?php  $file_status = array('Scheduled','Completed','Cancelled','Inspection Started','Report Pending'); ?>
 					                  <?php  if (!in_array($call_data['status'], $file_status)) { ?>
 					                  <span class="label label-sm label-success">
 					                     <a href="<?php echo BASE_PATH; ?>Callscheduleregister?id=<?php echo base64_encode($call_data['id']); ?>&fid=<?php echo base64_encode($call_data['file_id']); ?>"  style="color:#fff">Call Schedule</a>
@@ -334,7 +291,7 @@
 					                <?php } ?>
 					                <?php if ($access_right['edit_rights'] == 1) { ?>
 					                <td>
-					                  <?php  $file_status = array('Pending','Invoiced','Completed','Cancelled'); ?>
+					                  <?php  $file_status = array('Pending','Invoiced','Completed','Cancelled','Inspection Started','Report Pending'); ?>
 					                  <?php  if (!in_array($call_data['status'], $file_status)) { ?>
 					                  <span class="label label-sm label-info">
 					                     <a href="<?php echo BASE_PATH; ?>Callrescheduleregister?id=<?php echo base64_encode($call_data['id']); ?>&fid=<?php echo base64_encode($call_data['file_id']); ?>"  style="color:#fff">Call ReSchedule<</a>
@@ -344,10 +301,20 @@
 					                <?php } ?>
 					                <?php if ($access_right['edit_rights'] == 1) { ?>
 					                <td>
-					                  <?php  $file_status = array('Pending','Invoiced','Completed','Cancelled'); ?>
+					                  <?php  $file_status = array('Pending','Invoiced','Completed','Cancelled','Inspection Started','Report Pending'); ?>
 					                  <?php  if (!in_array($call_data['status'], $file_status)) { ?>
 					                  <span class="label label-sm label-danger">
-					                     <a href="<?php echo BASE_PATH; ?>Callcancelregister?id=<?php echo base64_encode($call_data['id']); ?>&fid=<?php echo base64_encode($call_data['file_id']); ?>"  style="color:#fff">Call Cancel<</a>
+					                     <a href="<?php echo BASE_PATH; ?>Callcancelregister?id=<?php echo base64_encode($call_data['id']); ?>&fid=<?php echo base64_encode($call_data['file_id']); ?>"  style="color:#fff">Call Cancel</a>
+					                  </span><br/><br/>
+					                  <?php } ?>
+					                </td>
+					                <?php } ?>
+					                <?php if ($access_right['edit_rights'] == 1) { ?>
+					                <td>
+					                  <?php  $file_status = array('Pending','Invoiced','Completed','Cancelled','Inspection Started','Report Pending'); ?>
+					                  <?php  if (!in_array($call_data['status'], $file_status)) { ?>
+					                  <span class="label label-sm label-info">
+					                     <a href="<?php echo BASE_PATH; ?>Addinspectortocallregister?id=<?php echo base64_encode($call_data['id']); ?>&fid=<?php echo base64_encode($call_data['file_id']); ?>"  style="color:#fff">Add Inspector</a>
 					                  </span><br/><br/>
 					                  <?php } ?>
 					                </td>

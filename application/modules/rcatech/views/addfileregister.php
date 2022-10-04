@@ -175,7 +175,7 @@
 												<div class="row">
 													<div class="col-md-6">
 														<div class="form-group">
-															<label class="control-label col-md-3">File Creation Date*</label>
+															<label class="control-label col-md-3"><font color="red">File Creation Date*</font></label>
 															<div class="col-md-9">
 																<input type="text" class="form-control" placeholder="" name="file_date" id="file_date" value="<?php echo date('d-m-Y'); ?>" style="width:25%" readonly>
 																<span for="user_data" class="help-block"></span>
@@ -184,7 +184,7 @@
 													</div>
 													<div class="col-md-6">
 														<div class="form-group">
-															<label class="control-label col-md-3">File Source</label>
+															<label class="control-label col-md-3"><font color="red">File Source*</font></label>
 															<div class="col-md-9">
 																<select class="form-control input-large select2me" data-placeholder="Select..." name="file_source" id="file_source">
 																	<option value=""></option>
@@ -204,12 +204,12 @@
 												<div class="row">
 													<div class="col-md-6">
 														<div class="form-group">
-															<label class="control-label col-md-3">Client Name*</label>
+															<label class="control-label col-md-3"><font color="red">Client Name*</font></label>
 															<div class="col-md-9">
 																<select class="form-control input-large select2me" data-placeholder="Select..." name="clients_name" id="clients_name">
 																	<option value=""></option>
 																	<?php foreach($clients_data as $rows) {  ?>
-																	<option value="<?php echo $rows['id']; ?>"><?php echo $rows['client_name']."  (".$rows['city'].")"; ?></option>
+																	<option value="<?php echo $rows['id']; ?>"><?php echo $rows['client_name']."  (".$rows['client_location'].")"; ?></option>
 																	<?php } ?>
 																</select>
 																<span for="clients_name" class="help-block"></span>
@@ -248,7 +248,7 @@
 													<!--/span-->	
 													<div class="col-md-6">
 														<div class="form-group">
-															<label class="control-label col-md-3">Work Type</label>
+															<label class="control-label col-md-3"><font color="red">Work Type*</font></label>
 															<div class="col-md-9">
 																<select class="form-control input-large select2me" data-placeholder="Select..." name="work_type" id="work_type">
 																	<option value=""></option>

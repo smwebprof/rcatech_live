@@ -93,7 +93,8 @@ class File_master extends CI_Model{
       $queryforpubid = $this->db->query($querystring);
 
       $result = $queryforpubid->result_array();
-      $output = '<option value="">Select</option>';
+      //$output = '<option value="">Select</option>';
+      $output = '';
       foreach($result as $row)
       {
          $output .= '<option value="'.$row['id'].'">'.$row['file_no'].'</option>';
@@ -292,7 +293,7 @@ class File_master extends CI_Model{
     function getAllFiledata(){  //$id
 
 
-        $querystring =  "SELECT rft.*,rcm.client_name,rct.name city_name,rfsm.file_source,rwtm.work_name,rctm.category_name  FROM rcatech_fileregister_transaction rft left join rcatech_client_master rcm ON rcm.id=rft.client_id left join rcatech_file_source_master rfsm ON rfsm.id=rft.file_source left join rcatech_work_type_master rwtm ON rwtm.id=rft.work_type left join  rcatech_category_master rctm ON rctm.id=rft.category_name left join   rcatech_cities rct ON rct.id=rcm.city_id Where rft.is_active = 1 and rft.user_comp_id = '".$_SESSION['comp_id']."' and rft.user_branch_id = '".$_SESSION['branch_id']."' and rft.status = 'Pending' order by rft.id desc";
+        $querystring =  "SELECT rft.*,rcm.client_name,rcm.client_location,rct.name city_name,rfsm.file_source,rwtm.work_name,rctm.category_name  FROM rcatech_fileregister_transaction rft left join rcatech_client_master rcm ON rcm.id=rft.client_id left join rcatech_file_source_master rfsm ON rfsm.id=rft.file_source left join rcatech_work_type_master rwtm ON rwtm.id=rft.work_type left join  rcatech_category_master rctm ON rctm.id=rft.category_name left join   rcatech_cities rct ON rct.id=rcm.city_id Where rft.is_active = 1 and rft.user_comp_id = '".$_SESSION['comp_id']."' and rft.user_branch_id = '".$_SESSION['branch_id']."' and rft.status = 'Pending' order by rft.id desc";
         //echo $querystring ;exit;
         $queryforpubid = $this->db->query($querystring);
 
@@ -405,9 +406,9 @@ class File_master extends CI_Model{
           $search .= ' and rft.vessel_name = "'.@$data['vessel_name'].'"';
        }
 
-       $querystring =  "SELECT rft.*,rcm.client_name,rct.name city_name,rfsm.file_source,rwtm.work_name,rctm.category_name  FROM rcatech_fileregister_transaction rft left join rcatech_client_master rcm ON rcm.id=rft.client_id left join rcatech_file_source_master rfsm ON rfsm.id=rft.file_source left join rcatech_work_type_master rwtm ON rwtm.id=rft.work_type left join  rcatech_category_master rctm ON rctm.id=rft.category_name left join   rcatech_cities rct ON rct.id=rcm.city_id Where rft.is_active = 1 and rft.user_comp_id = '".$_SESSION['comp_id']."' and rft.user_branch_id = '".$_SESSION['branch_id']."' '.$search.' order by rft.id desc";
+       $querystring =  "SELECT rft.*,rcm.client_name,rct.name city_name,rfsm.file_source,rwtm.work_name,rctm.category_name  FROM rcatech_fileregister_transaction rft left join rcatech_client_master rcm ON rcm.id=rft.client_id left join rcatech_file_source_master rfsm ON rfsm.id=rft.file_source left join rcatech_work_type_master rwtm ON rwtm.id=rft.work_type left join  rcatech_category_master rctm ON rctm.id=rft.category_name left join   rcatech_cities rct ON rct.id=rcm.city_id Where rft.is_active = 1 and rft.user_comp_id = '".$_SESSION['comp_id']."' and rft.user_branch_id = '".$_SESSION['branch_id']."' $search order by rft.id desc";
 
-        #echo $querystring;exit;
+        //echo $querystring;exit;
         $queryforpubid = $this->db->query($querystring);
 
         $result = $queryforpubid->result_array();
@@ -448,7 +449,7 @@ class File_master extends CI_Model{
     function getFiledataById($params){  //$id
 
 
-        $querystring =  'SELECT rft.*,rcm.client_name,reum1.first_name fname,reum1.last_name lname,reum2.first_name ename,reum2.last_name elname,rfsm.file_source source_info,rwtm.work_name,rctm.category_name,rcrm.currency_name   FROM rcatech_fileregister_transaction rft left join rcatech_client_master rcm ON rcm.id=rft.client_id left join rcatech_employee_users_master reum1 ON reum1.id=rft.entry_user_id left join rcatech_employee_users_master reum2 ON reum2.id=rft.modify_user_id left join rcatech_file_source_master rfsm ON rfsm.id=rft.file_source left join rcatech_category_master rctm ON rctm.id=rft.category_name
+        $querystring =  'SELECT rft.*,rcm.client_name,rcm.client_location,reum1.first_name fname,reum1.last_name lname,reum2.first_name ename,reum2.last_name elname,rfsm.file_source source_info,rwtm.work_name,rctm.category_name,rcrm.currency_name   FROM rcatech_fileregister_transaction rft left join rcatech_client_master rcm ON rcm.id=rft.client_id left join rcatech_employee_users_master reum1 ON reum1.id=rft.entry_user_id left join rcatech_employee_users_master reum2 ON reum2.id=rft.modify_user_id left join rcatech_file_source_master rfsm ON rfsm.id=rft.file_source left join rcatech_category_master rctm ON rctm.id=rft.category_name
           left join rcatech_work_type_master rwtm ON rwtm.id=rft.work_type
           left join rcatech_currency_master rcrm ON rcrm.id=rft.currency_id
           Where rft.is_active = 1 and rft.id = '.$params.' order by rft.id desc';

@@ -18,6 +18,17 @@ class Branch_master extends CI_Model{
 
    }
 
+    function getBranchAlldata(){ 
+
+        $querystring = "SELECT id,branch_name,branch_email,address,bank_name,bank_branch_name FROM rcatech_branch_master where is_active = 1 order by id";
+        $queryforpubid = $this->db->query($querystring);
+
+        $result = $queryforpubid->result_array();
+        return $result;
+
+    }
+
+
     function getBranchdata(){ 
 
         $querystring = "SELECT id,branch_name,branch_email,address,bank_name,bank_branch_name FROM rcatech_branch_master order by id desc";

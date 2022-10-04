@@ -183,7 +183,7 @@
 												<?php	
 												$rows = $clients_data;
 												foreach($rows as $clients){
-													echo '<option value="'.$clients["id"].'">'.$clients["client_name"].'</option>';
+													echo '<option value="'.$clients["id"].'">'.$clients["client_name"].' ('.$clients["client_location"].')</option>';
 												}	
 												?>	
 											</select>
@@ -269,6 +269,9 @@
 				                   Reports/Forms
 				                </th>
 				                <?php } */ ?>
+				                <th>
+				                   Call Generation
+				                </th>
 				              </tr>  
 				             </thead>
               				 <tbody> 
@@ -292,7 +295,7 @@
 					                  <?php echo $file_data['client_name']; ?>
 					                </td>
 					                <td>
-					                  <?php echo $file_data['city_name']; ?>
+					                  <?php echo $file_data['client_location']; ?>
 					                </td>
 					                <td>
 					                  <?php echo $file_data['file_source']; ?>
@@ -333,6 +336,11 @@
 					                  </span>
 					                </td>
 					                <?php } */ ?>
+					                <td class="center">
+					                    <span class="label label-sm label-info">
+					                     <a href="<?php echo BASE_PATH; ?>Addcallgenerationregister?id=<?php echo base64_encode($file_data['id']); ?>&cnid=<?php echo base64_encode($file_data['client_id']); ?>&fno=<?php echo base64_encode($file_data['file_no']); ?>"  style="color:#fff">Call Generation</a>
+					                  </span>
+					                </td>
 					              </tr> 
 
 					              <?php

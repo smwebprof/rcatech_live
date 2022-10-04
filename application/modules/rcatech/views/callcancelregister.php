@@ -132,7 +132,7 @@
 										<!--<a href="<?php echo BASE_PATH; ?>addclientinteraction" class="btn yellow">
 											<i class="fa fa-pencil"></i> Add Existing Client Interaction
 										</a>-->
-										<a href="<?php echo BASE_PATH; ?>ViewcallCancel" class="btn red">
+										<a href="<?php echo BASE_PATH; ?>Viewcallcancelled" class="btn red">
 											<i class="fa fa-pencil"></i> View All Files
 										</a>
 									    </div>
@@ -163,19 +163,141 @@
 
 										<?php if (@$_GET['msg']==2) { echo '<font size="3" color="red">Engineer Name is Required!!!</font>'; } ?>	
 
-										<form action="" method="post" class="form-horizontal callCancel-form" enctype="multipart/form-data" onsubmit="submitForm()">
+										<form action="" method="post" class="form-horizontal callcancel-form" enctype="multipart/form-data" onsubmit="submitForm()">
 										<input type="hidden" name="status" value="Cancelled">
 										<input type="hidden" name="call_id"	id="call_id" value="<?php echo $call_id; ?>">
 										<input type="hidden" name="file_id"	id="file_id" value="<?php echo $file_id; ?>">
 											
 											<div class="form-body">
+
+												<div class="form-body">
+												<h3 class="form-section alert alert-info">Call Details</h3> <br/>
+
+											<div class="row">
+													<div class="col-md-12">
+														<div class="portlet-body">
+														<div class="table-responsive">
+															<div id="field_parameter_div">
+															<?php foreach($file_data as $rows_data) {  ?>
+															<table class="table table-bordered table-hover">
+															<tbody>
+															<tr class="active">
+																<td>
+																	 Call No
+																</td>
+																<td>
+																	 <?php echo $rows_data['call_no']; ?>
+																</td>
+															</tr>
+															<tr class="active">
+																<td>
+																	 Client Name
+																</td>
+																<td>
+																	 <?php echo $rows_data['client_name']; ?>
+																</td>
+															</tr>
+															<tr class="active">
+																<td>
+																	 End User
+																</td>
+																<td>
+																	 <?php echo $rows_data['end_user']; ?>
+																</td>
+															</tr>
+															<tr class="active">
+																<td>
+																	 Manufactuer
+																</td>
+																<td>
+																	 <?php echo $rows_data['manufacturer']; ?>
+																</td>
+															</tr>
+															<tr class="active">
+																<td>
+																	 Inspection Location
+																</td>
+																<td>
+																	 <?php echo $rows_data['inspection_location']; ?>
+																</td>
+															</tr>
+															<tr class="active">
+																<td>
+																	 Inspection Date
+																</td>
+																<td>
+																	 <?php echo $rows_data['inspection_schedule_date']." (".$rows_data['call_days']." days)"; ?>
+																</td>
+															</tr>
+															</tbody>
+															</table>
+															<?php }  ?>
+														</div>
+														</div>
+											</div>
+											</div>
+											</div>
+
+											<div class="form-body">
+												<h3 class="form-section alert alert-info">Item Details</h3> <br/>
+
+											<div class="row">
+													<div class="col-md-12">
+														<div class="portlet-body">
+														<div class="table-responsive">
+															<div id="field_parameter_div">
+															<?php foreach($item_details as $rows_items) {  ?>
+															<table class="table table-bordered table-hover">
+															<tbody>
+															<tr class="active">
+																<td>
+																	 Item Name
+																</td>
+																<td>
+																	 <?php echo $rows_items['item_name']; ?>
+																</td>
+															</tr>
+															<tr class="active">
+																<td>
+																	 Item Subtype
+																</td>
+																<td>
+																	 <?php echo $rows_items['subitem_name']; ?>
+																</td>
+															</tr>
+															<tr class="active">
+																<td>
+																	 Quantity
+																</td>
+																<td>
+																	 <?php echo $rows_items['item_quantity']; ?>
+																</td>
+															</tr>
+															<tr class="active">
+																<td>
+																	 Unit
+																</td>
+																<td>
+																	 <?php echo $rows_items['unit_name']; ?>
+																</td>
+															</tr>
+															</tbody>
+															</table>
+															<?php }  ?>
+														</div>
+														</div>
+											</div>
+											</div>
+											</div>	
+
+												
 												<h3 class="form-section alert alert-info">Call Info - On Submit Link will goto inspector</h3>
 												* Marked fields are Mandatory <br/><br/>
 
 												<div class="row">
 													<div class="col-md-6">
 														<div class="form-group">
-															<label class="control-label col-md-3">File No*</label>
+															<label class="control-label col-md-3"><font color="red">File No*</font></label>
 															<div class="col-md-6">
 																<input type="text" class="form-control" placeholder="" name="call_file_no" id="call_file_no" value="<?php echo $file_data[0]['file_no']; ?>" readonly>
 																<span for="call_file_no" class="help-block"></span>
@@ -184,7 +306,7 @@
 													</div>
 													<div class="col-md-6">
 														<div class="form-group">
-															<label class="control-label col-md-3">Call No*</label>
+															<label class="control-label col-md-3"><font color="red">Call No*</font></label>
 															<div class="col-md-6">
 																<input type="text" class="form-control" placeholder="" name="call_no" id="call_no" value="<?php echo $file_data[0]['call_no']; ?>" readonly>
 																<span for="call_no" class="help-block"></span>
@@ -199,7 +321,7 @@
 												<div class="row">
 													<div class="col-md-6">
 														<div class="form-group">
-															<label class="control-label col-md-3">Engineers Name*</label>
+															<label class="control-label col-md-3"><font color="red">Engineers Name*</font></label>
 															<div class="col-md-6">
 																<select class="form-control input-large select2me" data-placeholder="Select..." name="engineer_data[]" id="engineer_data" multiple>
 																<?php
@@ -228,7 +350,7 @@
 													</div>
 													<div class="col-md-6">
 														<div class="form-group">
-															<label class="control-label col-md-3">Remarks*</label>
+															<label class="control-label col-md-3"><font color="red">Remarks*</font></label>
 															<div class="col-md-6">
 																<textarea class="form-control" rows="3" name="remarks" id="remarks"><?php echo $schedule_data[0]['remarks']; ?></textarea>
 																<span for="remarks" class="help-block"></span>
@@ -308,7 +430,7 @@
 													<div class="col-md-6">
 														<div class="col-md-offset-9 col-md-9">
 															<button type="submit" class="btn green">Submit</button>&nbsp;&nbsp;&nbsp;
-															<a href="<?php echo BASE_PATH; ?>ViewcallCancel"><button type="button" class="btn default">Cancel</button></a>
+															<a href="<?php echo BASE_PATH; ?>Viewcallcancelled"><button type="button" class="btn default">Cancel</button></a>
 														</div>
 													</div>
 													<div class="col-md-6">

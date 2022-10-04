@@ -83,6 +83,7 @@ class Callcancelregister extends MX_Controller {
 					      $email_call_inspdate_to = $rows['call_to_date'];
 					      $email_call_firstname = $rows['first_name'];
 					      $email_call_lastname = $rows['last_name'];
+					      $email_call_to = $rows['email'];
 
 					      $config['protocol'] = 'smtp';
 						  $config['smtp_host'] = 'rcahrd.in';
@@ -104,18 +105,19 @@ class Callcancelregister extends MX_Controller {
 
 						    $call_email_report .= '<br><b>NOTE: This is a system generated mail. Please do not reply</b><br><br>';   
 
-			    			//echo $call_email_report;exit;
+			    			echo $call_email_report;exit;
 
 			    			$this->email->initialize($config);
 
 						    $this->email->from($config['smtp_user'], $config['smtp_from_name']);
-						    $this->email->to($_SESSION['user_email']);  
+						    $this->email->to($email_call_to);  
 
-						    $getEmailIds = $this->User_master->getEmailidsFile();
+						    $call_lead_emails_cc = $this->Call_master->getEmailidsCallEmails();
+							//print_r($call_lead_emails_cc);exit;
 
-				        	foreach ($getEmailIds as $rows) {
-				        		$email_cc[] = $rows['office_email'];
-				        	}
+			        		foreach ($call_lead_emails_cc as $rows) {
+			        			$email_cc[] = $rows['office_email'];
+			        		}
 				        	$this->email->cc($email_cc);
 
 				        	$this->email->subject($subject);
@@ -133,7 +135,7 @@ class Callcancelregister extends MX_Controller {
 					    	}*/
 				      }
 
-				      print_r($call_email_report);exit;
+				      //print_r($call_email_report);exit;
 				      
         		$redirecturl = BASE_PATH."Viewcallreschedule?msg=1";
 			    redirect($redirecturl);  
@@ -146,11 +148,20 @@ class Callcancelregister extends MX_Controller {
 			$result = $this->Call_master->getCallGenerationByCallId($id,$fid);
         	//print_r($result);exit;
         	if ($result[0]['id']) {
+				$emp_status = array('SURVEYOR HEAD','EMPLOYEE');
+				if (!in_array($_SESSION['employee_staff'], $emp_status)) {
+				//if ($_SESSION['employee_staff']!='SURVEYOR HEAD') { 
 				$call_docsdata = $this->Call_master->getAllCallDocDetailsById($result[0]['id']);
+				} else { 
+				$call_docsdata = $this->Call_master->getAllCallDocDetailsById2($result[0]['id']);
+				}
 			}
 			//print_r($call_docsdata);exit;
-			$schedule_data = $this->Call_master->getCallScheduleAllDataByCallid($id);
+			$schedule_data = $this->Call_master->getCallScheduleAllDataByCallid($id,$fid);
         	//print_r($schedule_data);exit;
+
+        	$item_details = $this->Call_master->getFCallItemDetailsById($id);
+		    //print_r($item_details);exit;
 
         	$call_days = $result[0]['call_days']-1;
         	if ($schedule_data[0]['call_from_date']) {
@@ -161,13 +172,18 @@ class Callcancelregister extends MX_Controller {
         		$inspection_schedule_next = date('d-m-Y', strtotime('+'.$call_days.' day', strtotime($inspection_schedule_date)));
         	}
 
-        	$engineers_data = $this->Call_master->getEngineerdataByFlagNew($result[0]['nabcb_flag']);
-        	//print_r($engineers_data);exit;
+        	if ($result[0]['nabcb_flag']==1) {        		
+        		$engineers_data = $this->Call_master->getEngineerdataByFlag($result[0]['nabcb_flag']);
+        	} else {
+        		$engineers_data = $this->Call_master->getEngineerdataByNoFlag();
+        	}
+       		//print_r($engineers_data);exit;
 
 			$data['call_id'] = $id;
 			$data['file_id'] = $fid;
 			$data['file_data'] = $result;
 			$data['call_docsdata'] = $call_docsdata;
+			$data['item_details'] = $item_details;
 			$data['schedule_data'] = $schedule_data;
 			$data['inspection_schedule_date'] = $inspection_schedule_date;
 			$data['inspection_schedule_next'] = $inspection_schedule_next;

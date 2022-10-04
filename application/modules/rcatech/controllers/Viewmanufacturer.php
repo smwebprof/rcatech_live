@@ -20,13 +20,13 @@ class Viewmanufacturer extends MX_Controller {
 	 */
 	public function index()
 	{
-		
+
 		if (!isset($_SESSION['userId'])) {
           $login = BASE_PATH."login/";
           redirect($login);
         }
 
-		$this->load->model('Call_master');
+		$this->load->model('General_master');
 		$this->load->model('User_master');
 		
 		$mainmodule_id = 9;
@@ -35,9 +35,9 @@ class Viewmanufacturer extends MX_Controller {
 		$data['title'] = 'RCAinet Tech - Viewmanufacturer';
 		#$this -> load -> model('campaign_model');
 		
-		$data['layout_body']='Viewmanufacturer';
+		$data['layout_body']='viewmanufacturer';
 
-		$result = $this->Call_master->getManufacturerdata();
+		$result = $this->General_master->getManufacturerdata();
 		//print_r($result);exit;
 		
 		$params['main_menus'] = $mainmodule_id;

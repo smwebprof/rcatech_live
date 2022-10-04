@@ -168,6 +168,127 @@
 										<input type="hidden" name="file_id"	id="file_id" value="<?php echo $file_id; ?>">
 											
 											<div class="form-body">
+												<h3 class="form-section alert alert-info">Call Details</h3> <br/>
+
+											<div class="row">
+													<div class="col-md-12">
+														<div class="portlet-body">
+														<div class="table-responsive">
+															<div id="field_parameter_div">
+															<?php foreach($call_data as $rows_data) {  ?>
+															<table class="table table-bordered table-hover">
+															<tbody>
+															<tr class="active">
+																<td>
+																	 Call No
+																</td>
+																<td>
+																	 <?php echo $rows_data['call_no']; ?>
+																</td>
+															</tr>
+															<tr class="active">
+																<td>
+																	 Client Name
+																</td>
+																<td>
+																	 <?php echo $rows_data['client_name']; ?>
+																</td>
+															</tr>
+															<tr class="active">
+																<td>
+																	 End User
+																</td>
+																<td>
+																	 <?php echo $rows_data['end_user']; ?>
+																</td>
+															</tr>
+															<tr class="active">
+																<td>
+																	 Manufactuer
+																</td>
+																<td>
+																	 <?php echo $rows_data['manufacturer']; ?>
+																</td>
+															</tr>
+															<tr class="active">
+																<td>
+																	 Inspection Location
+																</td>
+																<td>
+																	 <?php echo $rows_data['inspection_location']; ?>
+																</td>
+															</tr>
+															<tr class="active">
+																<td>
+																	 Inspection Date
+																</td>
+																<td>
+																	 <?php echo $rows_data['inspection_schedule_date']." (".$rows_data['call_days']." days)"; ?>
+																</td>
+															</tr>
+															</tbody>
+															</table>
+															<?php }  ?>
+														</div>
+														</div>
+											</div>
+											</div>
+											</div>	
+
+										   <div class="form-body">
+												<h3 class="form-section alert alert-info">Item Details</h3> <br/>
+
+											<div class="row">
+													<div class="col-md-12">
+														<div class="portlet-body">
+														<div class="table-responsive">
+															<div id="field_parameter_div">
+															<?php foreach($item_details as $rows_items) {  ?>
+															<table class="table table-bordered table-hover">
+															<tbody>
+															<tr class="active">
+																<td>
+																	 Item Name
+																</td>
+																<td>
+																	 <?php echo $rows_items['item_name']; ?>
+																</td>
+															</tr>
+															<tr class="active">
+																<td>
+																	 Item Subtype
+																</td>
+																<td>
+																	 <?php echo $rows_items['subitem_name']; ?>
+																</td>
+															</tr>
+															<tr class="active">
+																<td>
+																	 Quantity
+																</td>
+																<td>
+																	 <?php echo $rows_items['item_quantity']; ?>
+																</td>
+															</tr>
+															<tr class="active">
+																<td>
+																	 Unit
+																</td>
+																<td>
+																	 <?php echo $rows_items['unit_name']; ?>
+																</td>
+															</tr>
+															</tbody>
+															</table>
+															<?php }  ?>
+														</div>
+														</div>
+											</div>
+											</div>
+											</div>	
+
+
+
 												<h3 class="form-section alert alert-info">Call Documents</h3> <br/>
 
 											 <div class="row">
@@ -218,7 +339,7 @@
 												<div class="row">
 													<div class="col-md-6">
 														<div class="form-group">
-															<label class="control-label col-md-3">File No*</label>
+															<label class="control-label col-md-3"><font color="red">File No*</font></label>
 															<div class="col-md-6">
 																<input type="text" class="form-control" placeholder="" name="call_file_no" id="call_file_no" value="<?php echo $file_data[0]['file_no']; ?>" readonly>
 																<span for="call_file_no" class="help-block"></span>
@@ -227,7 +348,7 @@
 													</div>
 													<div class="col-md-6">
 														<div class="form-group">
-															<label class="control-label col-md-3">Call No*</label>
+															<label class="control-label col-md-3"><font color="red">Call No*</font></label>
 															<div class="col-md-6">
 																<input type="text" class="form-control" placeholder="" name="call_no" id="call_no" value="<?php echo $file_data[0]['call_no']; ?>" readonly>
 																<span for="call_no" class="help-block"></span>
@@ -242,7 +363,7 @@
 												<div class="row">
 													<div class="col-md-6">
 														<div class="form-group">
-															<label class="control-label col-md-3">From Schedule Date*</label>
+															<label class="control-label col-md-3"><font color="red">From Schedule Date*</font></label>
 															<div class="col-md-9">
 																<input type="text" class="form-control" placeholder="" name="call_from_date" id="call_from_date" value="<?php echo $inspection_schedule_date; ?>" readonly>
 																<span for="call_from_date" class="help-block"></span>
@@ -251,7 +372,7 @@
 													</div>
 													<div class="col-md-6">
 														<div class="form-group">
-															<label class="control-label col-md-3">To Schedule Date*</label>
+															<label class="control-label col-md-3"><font color="red">To Schedule Date*</font></label>
 															<div class="col-md-9">
 																<input type="text" class="form-control" placeholder="" name="call_to_date" id="call_to_date" value="<?php echo $inspection_schedule_next; ?>" readonly>
 																<span for="call_to_date" class="help-block"></span>
@@ -266,7 +387,7 @@
 											<div class="row">
 													<div class="col-md-6">
 														<div class="form-group">
-															<label class="control-label col-md-3">Engineers Name*</label>
+															<label class="control-label col-md-3"><font color="red">Engineers Name*</font></label>
 															<div class="col-md-6">
 																<select class="form-control input-large select2me" data-placeholder="Select..." name="engineer_data[]" id="engineer_data" multiple>
 																	<?php foreach($engineers_data as $rows) {  ?>
