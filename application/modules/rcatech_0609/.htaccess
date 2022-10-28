@@ -1,5 +1,0 @@
-<IfModule mod_rewrite.c>
-RRewriteCond %{REQUEST_FILENAME} !-f
-RewriteCond %{REQUEST_FILENAME} !-d
-RewriteRule ^(.*)$ login/$1 [L]
-</IfModule>
