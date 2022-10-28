@@ -104,7 +104,7 @@ class Addfileregister extends MX_Controller {
         		$this->email->set_newline("\r\n");
 
 	            $config['protocol'] = 'smtp';
-	            $config['smtp_host'] = 'rcahrd.in';
+	            $config['smtp_host'] = 'mail.rcahrd.in';
 	            $config['smtp_port'] = '587';
 	            $config['smtp_user'] = 'admin@rcahrd.in';
 	            $config['smtp_from_name'] = 'RCAINDIA Tech (Do_Not_Reply)';
@@ -137,20 +137,22 @@ class Addfileregister extends MX_Controller {
 
 			    $file_email_report .= '<br><b>NOTE: This is a system generated mail. Please do not reply</b><br><br>';
 
-			    echo $file_email_report;exit;
+			    //echo $file_email_report;exit;
 
 			    $this->email->initialize($config);
 
 			    $this->email->from($config['smtp_user'], $config['smtp_from_name']);
 			    $this->email->to($_SESSION['user_email']);  
 
-			    $call_lead_emails_cc = $this->Call_master->getEmailidsCallEmails();
+			    $call_lead_emails_cc = $this->Call_master->getEmailidsCallEmails($_SESSION['user_email']);
 						//print_r($call_lead_emails_cc);exit;
 
 			    foreach ($call_lead_emails_cc as $rows) {
 			        $email_cc[] = $rows['office_email'];
 			    }
 	        	$this->email->cc($email_cc);
+	        	
+	        	$this->email->bcc('shivaji.dalvi@rcaindia.com');
 
 	        	$this->email->subject($subject);
 
@@ -160,8 +162,9 @@ class Addfileregister extends MX_Controller {
 			       $redirecturl = BASE_PATH."Viewfileregister?msg=1";
 	               redirect($redirecturl);      
 			    } else { 
-			       $redirecturl = BASE_PATH."Addfileregister";
-	               redirect($redirecturl);
+			       //$redirecturl = BASE_PATH."Addfileregister";
+	               //redirect($redirecturl);
+	               show_error($this->email->print_debugger());
 			    }
 
 			    //$redirecturl = BASE_PATH."Viewfileregister?msg=1";

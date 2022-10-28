@@ -123,6 +123,12 @@
 									 Manufacturer Name
 								</th>
 								<th>
+									 Item Name
+								</th>
+								<th>
+									 Sub Item Name
+								</th>
+								<th>
 									 Active
 								</th>
 								<?php #if ($data['access_right']['edit_rights'] == 1) { ?>
@@ -149,6 +155,12 @@
 								</td>
 								<td>
 									 <?php echo $manufacturer_data['manufacturer_name']; ?>
+								</td>
+								<td>
+									 <?php echo $manufacturer_data['item_name']; ?>
+								</td>
+								<td>
+									 <?php echo $manufacturer_data['subitem_name']; ?>
 								</td>
 								<td>
 									 <?php 

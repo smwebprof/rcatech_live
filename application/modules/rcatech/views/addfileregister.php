@@ -237,9 +237,14 @@
 															<div class="col-md-9">
 																<select class="form-control input-large select2me" data-placeholder="Select..." name="currency_name" id="currency_name">
 																	<option value=""></option>
-																	<?php foreach($currency_data as $rows) {  ?>
+																	<?php foreach($currency_data as $rows) {  
+																	if ($rows['currency_name']=='RUPEES') {	
+																	?>
+																	<option value="<?php echo $rows['id']; ?>" selected><?php echo $rows['currency_name']; ?></option>
+																<?php } else { ?>
 																	<option value="<?php echo $rows['id']; ?>"><?php echo $rows['currency_name']; ?></option>
-																	<?php } ?>
+
+																<?php } } ?>
 																</select>
 																<span for="currency_name" class="help-block"></span>
 															</div>

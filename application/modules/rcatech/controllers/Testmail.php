@@ -29,7 +29,7 @@ class Testmail extends MX_Controller {
 		  $this->email->set_newline("\r\n");
 
           $config['protocol'] = 'smtp';
-          $config['smtp_host'] = 'rcahrd.in';
+          $config['smtp_host'] = 'sh200.bigrock.tempwebhost.net';
           $config['smtp_port'] = '587';
           $config['smtp_user'] = 'admin@rcahrd.in';
           $config['smtp_from_name'] = 'RCAINDIA (Do_Not_Reply)';
@@ -59,5 +59,63 @@ class Testmail extends MX_Controller {
           }    
 
         
+	}
+	
+	public function tmail()
+	{
+	    $_SESSION['branch_id'] = 21;
+	    $this->load->model('Call_master');
+	    
+                $this->load->library('email');
+        		$this->email->set_newline("\r\n");
+
+	            $config['protocol'] = 'smtp';
+	            $config['smtp_host'] = 'sh200.bigrock.tempwebhost.net';
+	            $config['smtp_port'] = '587';
+	            $config['smtp_user'] = 'admin@rcahrd.in';
+	            $config['smtp_from_name'] = 'RCAINDIA Tech (Do_Not_Reply)';
+	            $config['smtp_pass'] = 'U$FY[488AAS1';
+	            $config['wordwrap'] = TRUE;
+	            $config['newline'] = "\r\n";
+	            $config['mailtype'] = 'html';
+	            
+	    $email_file_no = 'Testmail';
+	    $subject = '[Testmail] NEW FILE ALERT - '.$email_file_no;
+
+	            $file_email_report = 'Dear User,<br><br>';
+				$file_email_report .= 'A new file has been generated – please find the details below :<br><br>';         
+	    
+	    //echo $file_email_report;exit;
+	    $to_email = 'tbackup@rcaindia.net';
+
+			    $this->email->initialize($config);
+
+			    $this->email->from($config['smtp_user'], $config['smtp_from_name']);
+			    $this->email->to('tbackup@rcaindia.net');
+	    
+	    
+	    $call_lead_emails_cc = $this->Call_master->getEmailidsCallEmails($to_email);
+		print_r($call_lead_emails_cc);exit;
+		
+		foreach ($call_lead_emails_cc as $rows) {
+			        $email_cc[] = $rows['office_email'];
+			    }
+			    
+		//print_r($email_cc);exit;
+		
+	        	$this->email->cc($email_cc);
+
+	        	$this->email->subject($subject);
+
+			    $this->email->message($file_email_report);
+
+			    if($this->email->send()) { 
+			      echo 'mail sent';exit;    
+			    } else { 
+			       //$redirecturl = BASE_PATH."Addfileregister";
+	               //redirect($redirecturl);
+	               show_error($this->email->print_debugger());
+			    }
+	    
 	}    
 }

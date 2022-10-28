@@ -73,6 +73,7 @@
            Custom.initAddManufacturer();
            Custom.initAddVendor();
            Custom.initReportGen();
+           Custom.initAddEngineerList();
            //FormFileUpload.init();
            TableAdvanced.init();
 
@@ -278,7 +279,8 @@
                } 
                });
              } 
-        });  
+        });
+
         
     </script>
 <!-- END JAVASCRIPTS -->

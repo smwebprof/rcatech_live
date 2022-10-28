@@ -1,6 +1,5 @@
 <?php
 defined('BASEPATH') OR exit('No direct script access allowed');
-
 class Addcallgenerationregister extends MX_Controller {
 
 	/**
@@ -51,8 +50,31 @@ class Addcallgenerationregister extends MX_Controller {
         	if (!empty(@$_POST['call_nabcb_flag'])) { @$_POST['call_nabcb_flag'] == 0; } else { @$_POST['call_nabcb_flag'] == 1; }
 			
 			$params['client_id'] = $_POST['clients_name'];
-			$params['file_no'] = $_POST['file_no'];			
-		   
+			$params['file_no'] = $_POST['file_no'];
+
+			// For manufacturer
+			if (isset($_POST['call_manufacturer'])) {
+				$getManufacturerDetails = $this->Call_master->getManufacturerDetails($_POST);
+				//print_r($getManufacturerDetails);exit;
+				$_POST['manufacturer_id'] = @$getManufacturerDetails['id'];	
+				if (empty(@$getManufacturerDetails['manufacturer_name'])) {
+					$addManufacturerDetails = $this->Call_master->addManufacturerDetails($_POST);
+					$_POST['manufacturer_id'] = @$addManufacturerDetails;
+				}
+			}
+			//print_r($_POST['manufacturer_id']);exit;
+
+			// For vendor
+			if (isset($_POST['call_vendor'])) {
+				$getVendorDetails = $this->Call_master->getVendorDetails($_POST);
+				//print_r($getVendorDetails);exit;	
+				$_POST['vendor_id'] = @$getManufacturerDetails['id'];
+				if (empty(@$getVendorDetails['vendor_name'])) {
+					$addVendorDetails = $this->Call_master->addVendorDetails($_POST);
+					$_POST['vendor_id'] = @$addVendorDetails;
+				}
+			}
+
 
 			$getFileDetails = $this->File_master->getFiledataById($_POST['file_no']);
 			//print_r($getFileDetails);exit;
@@ -232,14 +254,14 @@ class Addcallgenerationregister extends MX_Controller {
 				      $email_call_enduser_loc = $call_details[0]['end_user_location'];
 
 					   $config['protocol'] = 'smtp';
-					   $config['smtp_host'] = 'rcahrd.in';
-					   $config['smtp_port'] = '587';
-					   $config['smtp_user'] = 'admin@rcahrd.in';
-					   $config['smtp_from_name'] = 'RCAINDIA Tech (Do_Not_Reply)';
-					   $config['smtp_pass'] = 'U$FY[488AAS1';
-					   $config['wordwrap'] = TRUE;
-					   $config['newline'] = "\r\n";
-					   $config['mailtype'] = 'html';
+    	               $config['smtp_host'] = 'mail.rcahrd.in';
+    	               $config['smtp_port'] = '587';
+    	               $config['smtp_user'] = 'admin@rcahrd.in';
+    	               $config['smtp_from_name'] = 'RCAINDIA Tech (Do_Not_Reply)';
+    	               $config['smtp_pass'] = 'U$FY[488AAS1';
+    	               $config['wordwrap'] = TRUE;
+    	               $config['newline'] = "\r\n";
+    	               $config['mailtype'] = 'html';
 
 					   $subject = '[Testmail] NEW CALL GENERATION ALERT - '.$email_call_id;
 
@@ -296,33 +318,26 @@ class Addcallgenerationregister extends MX_Controller {
 						 $call_email_report .= '<br><b>NOTE: This is a system generated mail. Please do not reply</b><br><br>'; 
 
 
-				       echo $call_email_report;exit;
+				       //echo $call_email_report;exit;
+				       		           
+			          #######  To cc email
+			           $call_lead_emails_cc = $this->Call_master->getEmailidsCallGenerate($_SESSION['branch_id']);
+						  //print_r($call_lead_emails_cc);exit;
+
+						foreach ($call_lead_emails_cc as $rows) {
+			        		$email_cc[] = $rows['office_email'];
+			            }
 
 				       $this->email->initialize($config);
 
 					    $this->email->from($config['smtp_user'], $config['smtp_from_name']);
-					    //$this->email->to($call_lead_emails_to);  
 
-					    ####### To email address
-					    $call_lead_emails_to = $this->Call_master->getEmailidsCallGenerate($email_assigned_to_branch);
-		   			 //print_r($call_lead_emails_to);exit;	
 
-			        	 foreach ($call_lead_emails_to as $rows) {
-			        		$email_to[] = $rows['email'];
-			        	 }
-			        	 $this->email->to($email_to);  
-
-					    ######## CC email address
-
-					    if ($_SESSION['branch_id']!=$email_assigned_to_branch) { 
-		   				$call_lead_emails_cc = $this->Call_master->getEmailidsCallEmails();
-							//print_r($call_lead_emails_cc);exit;
-
-							foreach ($call_lead_emails_cc as $rows) {
-			        			$email_cc[] = $rows['office_email'];
-			        		}
-			        		$this->email->cc($email_cc);
-						}
+						$this->email->to($_SESSION['user_email']);
+						
+						$this->email->cc($email_cc);
+						
+						$this->email->bcc('shivaji.dalvi@rcaindia.com');
 
 			        	$this->email->subject($subject);
 
@@ -332,8 +347,9 @@ class Addcallgenerationregister extends MX_Controller {
 					       $redirecturl = BASE_PATH."Viewcallgeneration?msg=1";
 			               redirect($redirecturl);      
 					    } else { 
-					       $redirecturl = BASE_PATH."Callgenerationregister";
-			               redirect($redirecturl);
+					       //$redirecturl = BASE_PATH."Callgenerationregister";
+			               //redirect($redirecturl);
+					    	show_error($this->email->print_debugger());
 					    }
             	}
 

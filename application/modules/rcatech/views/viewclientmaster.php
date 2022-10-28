@@ -146,11 +146,11 @@
 									 Edit
 								</th>
 								<?php #} ?>
-								<?php #if ($data['access_right']['delete_rights'] == 1) { ?>
+								<?php /*if ($data['access_right']['delete_rights'] == 1) { ?>
 								<th>
 									 Delete
 								</th>
-								<?php #} ?>
+								<?php } */?>
 							</tr>
 							</thead>
 							<tbody>
@@ -185,13 +185,13 @@
 									</span>
 								</td>
 								<?php #} ?>
-								<?php #if ($data['access_right']['delete_rights'] == 1) { ?>
+								<?php /*if ($data['access_right']['delete_rights'] == 1) { ?>
 								<td>
 									<span class="label label-sm label-info">
 										 <a href="<?php echo BASE_PATH; ?>delclientmaster?id=<?php echo base64_encode($client_data['id']); ?>"  style="color:#fff">Delete</a>
 									</span>
 								</td>
-								<?php #} ?>
+								<?php } */?>
 							</tr>	
 
 							<?php

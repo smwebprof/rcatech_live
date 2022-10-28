@@ -32,7 +32,12 @@ class Callscheduleregister extends MX_Controller {
 		$this->load->model('File_master');
 		$this->load->model('Call_master');
 		$this->load->model('User_master');
+		$this->load->model('Branch_master');
 
+		/*if ($_SESSION['employee_staff']=='EMPLOYEE') {
+			$redirecturl = BASE_PATH."fullviewcallschedule?id=".$_GET['id']."&fid=".$_GET['fid'];
+			redirect($redirecturl);
+		}*/
 
 		if (isset($_GET['cl'])) {
 			$id = base64_decode($_GET['cl']);
@@ -57,11 +62,20 @@ class Callscheduleregister extends MX_Controller {
 				if ($schedule_data) {
 				$call_details = $this->Call_master->getCallScheduleAllDataByCallid($id,$fid);
 				//print_r($call_details);exit;
+
+				$doc_path = BASE_PATH."Reportgenerationregister?id=".base64_encode($id)."&fid=".base64_encode($fid);
+
 				$this->load->library('email');
 				$this->email->set_newline("\r\n");
 
 				foreach ($call_details as $rows) {
-				    	  $email_call_no = $rows['call_no'];
+				    	  //$email_call_no = $rows['call_no'];
+					      if ($rows['employee_staff']!='EMPLOYEE') {
+						  $email_call_no = "<a href='".$doc_path."'>".$rows['call_no']."</a>";
+						  }	else {
+						  $email_call_no = $rows['call_no'];	
+						  }
+						  $email_call_id = $rows['call_no'];	
 					      $email_file_no = $rows['file_no'];
 					      $email_call_client = $rows['client_name'];
 					      $email_call_location = $rows['inspection_location'];
@@ -76,7 +90,7 @@ class Callscheduleregister extends MX_Controller {
 					      $email_call_city = $rows['city_name'];
 
 					      $config['protocol'] = 'smtp';
-						  $config['smtp_host'] = 'rcahrd.in';
+						  $config['smtp_host'] = 'mail.rcahrd.in';
 						  $config['smtp_port'] = '587';
 						  $config['smtp_user'] = 'admin@rcahrd.in';
 						  $config['smtp_from_name'] = 'RCAINDIA Tech (Do_Not_Reply)';
@@ -85,7 +99,7 @@ class Callscheduleregister extends MX_Controller {
 						  $config['newline'] = "\r\n";
 						  $config['mailtype'] = 'html';
 
-					      $subject = '[Testmail] Your Call Status is Report Pending for Report Generation ALERT - '.$email_call_no;
+					      $subject = '[Testmail] Your Call Status is Report Pending for Report Generation ALERT - '.$email_call_id;
 
 						  $call_email_report = 'Dear '.$email_call_firstname.' '.$email_call_lastname.',<br><br>';
 						  $call_email_report .= 'Your Call Status is Report Pending for Report Generation – please find the details below :<br><br>';	
@@ -106,20 +120,22 @@ class Callscheduleregister extends MX_Controller {
 
 						    $call_email_report .= '<br><b>NOTE: This is a system generated mail. Please do not reply</b><br><br>';   
 
-			    			echo $call_email_report;exit;
+			    			//echo $call_email_report;exit;
 
 			    			$this->email->initialize($config);
 
 						    $this->email->from($config['smtp_user'], $config['smtp_from_name']);
 						    $this->email->to($email_call_to);  
 
-						    $call_lead_emails_cc = $this->Call_master->getEmailidsCallEmails();
+						    $call_lead_emails_cc = $this->Call_master->getEmailidsCallEmails($email_call_to);
 							//print_r($call_lead_emails_cc);exit;
 
 			        		foreach ($call_lead_emails_cc as $rows) {
 			        			$email_cc[] = $rows['office_email'];
 			        		}
 				        	$this->email->cc($email_cc);
+				        	
+				        	$this->email->bcc('shivaji.dalvi@rcaindia.com');
 
 				        	$this->email->subject($subject);
 
@@ -151,19 +167,184 @@ class Callscheduleregister extends MX_Controller {
 			$_POST['call_from_date'] = date('Y-m-d H:i:s',strtotime($_POST['call_from_date']));
 			$_POST['call_to_date'] = date('Y-m-d H:i:s',strtotime($_POST['call_to_date']));
 
-			if (empty($_POST['engineer_data'])) {
-				$redirecturl = BASE_PATH."Callscheduleregister?id=".base64_encode($_POST['call_id'])."&fid=MQ==".base64_encode($_POST['file_id'])."&msg=2";
-			    redirect($redirecturl);	
+			if ($_POST['assigned_to_branch']==$_SESSION['branch_id']) { 
+				if (empty($_POST['engineer_data'])) {
+					$redirecturl = BASE_PATH."Callscheduleregister?id=".base64_encode($_POST['call_id'])."&fid=MQ==".base64_encode($_POST['file_id'])."&msg=2";
+				    redirect($redirecturl);	
+				}
 			}
+			
+			if ($_POST['assigned_to_branch']!=$_SESSION['branch_id']) { 
+				$_POST['status'] = 'Assigned';
+				$assinged_branch = $this->Call_master->updateCallScheduleByBranch($_POST);
+				//print_r($assinged_branch);exit;
+				//$assinged_branch = 1;
+				if ($assinged_branch) {
+					$call_details = $this->Call_master->getCallGenerationByCallId($_POST['call_id'],$_POST['file_id']);
+					//print_r($call_details);exit;
 
-			$schedule_data = $this->Call_master->addCallScheduleData($_POST);
-			//$schedule_data = 1;
-        	//print_r($schedule_data);exit;
-        	if ($schedule_data) {
+					$item_details = $this->Call_master->getFCallItemDetailsById($_POST['call_id']);
+				    //print_r($item_details);exit;
 
-					  $st = 'Scheduled';
+				    $calldoc_details = $this->Call_master->getCallDocDetailsById($_POST['call_id']);
+		    		 //print_r($calldoc_details);exit;
+
+					 //$path_parts = pathinfo($calldoc_details[0]['document_path']);
+					 $doc_path = BASE_PATH."Callscheduleregister?id=".base64_encode($_POST['call_id'])."&fid=".base64_encode($_POST['file_id']);
+					 //print_r($path_parts);exit;
+					 $this->load->library('email');
+				      $this->email->set_newline("\r\n");
+
+
+				      //////// send email notification ///////////////
+				      $email_call_id = $call_details[0]['call_no'];
+				      $email_call_no = "<a href='".$doc_path."'>".$call_details[0]['call_no']."</a>";
+				      $email_call_date = date('d-m-Y',strtotime($call_details[0]['call_date']));
+				      $email_file_no = $call_details[0]['file_no'];
+				      $email_call_client = $call_details[0]['client_name'];
+				      $email_call_location = $call_details[0]['inspection_location'];
+				      $email_call_manufacturer = $call_details[0]['manufacturer'];
+				      $email_call_enduser = $call_details[0]['end_user'];
+				      $email_call_inspdate = $call_details[0]['inspection_schedule_date'];
+				      $email_call_inspdays = $call_details[0]['call_days'];
+				      //$email_call_empname = $call_details[0]['first_name'].' '.$call_details[0]['first_name'];
+				      $email_call_by = $call_details[0]['emp_code'];
+				      $email_call_city = $call_details[0]['city_name'];
+				      $email_assigned_to_branch = $call_details[0]['assigned_to_branch'];
+				      $email_call_client_loc = $call_details[0]['client_location'];
+				      $email_call_enduser_loc = $call_details[0]['end_user_location'];
+
+					   $config['protocol'] = 'smtp';
+					   $config['smtp_host'] = 'mail.rcahrd.in';
+					   $config['smtp_port'] = '587';
+					   $config['smtp_user'] = 'admin@rcahrd.in';
+					   $config['smtp_from_name'] = 'RCAINDIA Tech (Do_Not_Reply)';
+					   $config['smtp_pass'] = 'U$FY[488AAS1';
+					   $config['wordwrap'] = TRUE;
+					   $config['newline'] = "\r\n";
+					   $config['mailtype'] = 'html';
+
+					   $subject = '[Testmail] NEW CALL ASSIGNED ALERT - '.$email_call_id;
+
+						$call_email_report = 'Dear User,<br><br>';
+						$call_email_report .= 'A New Call has been assigned – please find the details below :<br><br>';			
+
+						/*$call_email_report .= '<table width="100%" cellpadding="0" border="1">
+						          		 <tr><td align="center"><b>Call No</b></td><td align="center"><b>Call Date</b></td><td align="center"><b>Client Name</b></td><td align="center"><b>File No</b></td><td align="center"><b>Inspection Location</b></td><td align="center"><b>Manufacturer Name</b></td></tr>
+						          		 <tr><td align="center">'.$email_call_no.'</td><td align="center">'.$email_call_date.'</td><td align="center">'.$email_call_client.'</td><td align="center">'.$email_file_no.'</td><td align="center">'.$email_call_location.'</td><td align="center">'.$email_call_manufacturer.'</td>
+						          		 </tr></table>';*/
+
+						$call_email_report .= '<table width="30%" cellpadding="0" border="1">
+			    			<tr><td align="left"><b>Call No</b></td><td align="left">'.$email_call_no.'</td></tr>
+			    			<tr><td align="left"><b>Client Name</b></td><td align="left">'.$email_call_client.','.$email_call_client_loc.'</td></tr>
+			    			<tr><td align="left"><b>End User</b></td><td align="left">'.$email_call_enduser.','.$email_call_enduser_loc.'</td></tr>
+			    			<tr><td align="left"><b>Manufactuer</b></td><td align="left">'.$email_call_manufacturer.'</td></tr>
+			    			<tr><td align="left"><b>Inspection Location</b></td><td align="left">'.$email_call_location.', '.$email_call_city.' </td></tr>
+			    			<tr><td align="left"><b>Inspection Date</b></td><td align="left">'.$email_call_inspdate.' ('.$email_call_inspdays.' days)</td></tr>
+			    			<tr><td align="left"><b>Call Generated By</b></td><td align="left">'.$email_call_by.'</td></tr>
+			    			</table>';  
+
+
+						$call_email_report .= '<br><br><b>Item Details :</b><br><br>';
+				      /**$call_email_report .= '<table width="100%" cellpadding="0" border="1">'; 
+				      $call_email_report .= '<tr><td align="center"><b>Item Name</b></td><td align="center"><b>Item Subtype</b></td><td align="center"><b>Inspection Date</b></td><td align="center"><b>Unit</b></td></tr>';
+				      foreach ($item_details as $k=>$v) {
+				        	 		 
+						    	$call_email_report .= '<tr><td align="center">'.$v["item_name"].'</td><td align="center">'.$v["subitem_name"].'</td><td align="center">'.$v["item_schedule_date"].'</td><td align="center">'.$v["unit_name"].'</td>
+						          		 </tr>';
+						 }
+						 $call_email_report .= '</table>';***/  	
+
+						foreach ($item_details as $k=>$v) {
+							 $call_email_report .= '<table width="30%" cellpadding="0" border="1">
+				    			<tr><td align="left"><b>Item Name</b></td><td align="left">'.$v["item_name"].'</td></tr>
+				    			<tr><td align="left"><b>Item Subtype</b></td><td align="left">'.$v["subitem_name"].'</td></tr>
+				    			<tr><td align="left"><b>Quantity</b></td><td align="left">'.$v["item_quantity"].'</td></tr>
+				    			<tr><td align="left"><b>Unit</b></td><td align="left">'.$v["unit_name"].'</td></tr>
+				    			</table>'; 
+			    		}
+
+			    			
+			    			
+						/***$call_email_report .= '<br><br><b>Call Documents :</b><br><br>';
+						$call_email_report .= '<table width="100%" cellpadding="0" border="1">'; 
+				      $call_email_report .= '<tr><td align="center"><b>Document Name</b></td><td align="center"><b>Document Path</b></td></tr>';
+				      foreach ($calldoc_details as $k=>$v) {
+				        	   $email_call_doc_path = "<a href='".$v["document_path"]."'>".$v["document_path"]."</a>";		 
+						    	$call_email_report .= '<tr><td align="center">'.$v["document_name"].'</td><td align="center">'.$email_call_doc_path.'</td></tr>';
+						 }
+						 $call_email_report .= '</table>';***/  		 
+
+						 $call_email_report .= '<br><br>From,<br>'; 
+						 $call_email_report .= '<br>RCAinet Tech Admin<br><br>'; 
+
+						 $call_email_report .= '<br><b>NOTE: This is a system generated mail. Please do not reply</b><br><br>'; 
+
+
+				       //echo $call_email_report;exit;
+				       $this->email->initialize($config);
+
+					    $this->email->from($config['smtp_user'], $config['smtp_from_name']);
+					    //$this->email->to($call_lead_emails_to);  
+
+					    ####### To email address
+					    $call_lead_emails_to = $this->Call_master->getEmailidsCallGenerate($email_assigned_to_branch);
+		   			 //print_r($call_lead_emails_to);exit;	
+
+			        	 foreach ($call_lead_emails_to as $rows) {
+			        		$email_to[] = $rows['office_email'];
+			        	 }
+			        	 $this->email->to($email_to);  
+
+					    ######## CC email address
+
+					    if ($_SESSION['branch_id']!=$email_assigned_to_branch) { 
+		   				$call_lead_emails_cc = $this->Call_master->getEmailidsCallGenerate($_SESSION['branch_id']);
+							//print_r($call_lead_emails_cc);exit;
+
+							foreach ($call_lead_emails_cc as $rows) {
+			        			$email_cc[] = $rows['office_email'];
+			        		}
+			        		$this->email->cc($email_cc);
+						}
+						
+						$this->email->bcc('shivaji.dalvi@rcaindia.com');
+
+						######## CC email address
+
+					    /*if ($_SESSION['branch_id']!=$email_assigned_to_branch) { 
+		   				$call_lead_emails_cc = $this->Call_master->getEmailidsCallEmails();
+							//print_r($call_lead_emails_cc);exit;
+
+							foreach ($call_lead_emails_cc as $rows) {
+			        			$email_cc[] = $rows['office_email'];
+			        		}
+			        		$this->email->cc($email_cc);
+						}*/
+
+			        	$this->email->subject($subject);
+
+					    $this->email->message($call_email_report);
+
+					    if($this->email->send()) { 
+					       $redirecturl = BASE_PATH."Viewcallgeneration?msg=1";
+			               redirect($redirecturl);      
+					    } else { 
+					       //print_r($call_email_report);exit;
+					       	
+					       //$redirecturl = BASE_PATH."Callgenerationregister";
+			               //redirect($redirecturl);
+			               show_error($this->email->print_debugger());
+					    }
+				}
+			} else { 
+				$schedule_data = $this->Call_master->addCallScheduleData($_POST);
+				//$schedule_data = 1;
+	        	//print_r($schedule_data);exit;
+	        	if ($schedule_data) {
+	        		  $st = 'Scheduled';
 					  $update_status = $this->Call_master->updateCallScheduleComp($_POST['call_id'],$st,$_POST['file_id']);
-					  //print_r($call_details);exit;
+					  //print_r($update_status);exit;
 
 					  $call_details = $this->Call_master->getCallScheduleAllDataByCallid($_POST['call_id'],$_POST['file_id']);
 					  //print_r($call_details);exit;
@@ -177,14 +358,14 @@ class Callscheduleregister extends MX_Controller {
 					   //$path_parts = pathinfo($calldoc_details[0]['document_path']);
 					   $doc_path = BASE_PATH."Callscheduleregister?id=".base64_encode($_POST['call_id'])."&fid=".base64_encode($_POST['file_id']);
 					   //print_r($path_parts);exit;
+					   $this->load->library('email');
+				       $this->email->set_newline("\r\n");
 
-					  $this->load->library('email');
-				      $this->email->set_newline("\r\n");
-
-				      foreach ($call_details as $rows) {
+				       foreach ($call_details as $rows) {
 				      	  //////// send email notification ///////////////
-				      	  $email_call_id = $call_details[0]['call_no'];
+				       	  $email_call_id = $call_details[0]['call_no'];
 					      $email_call_no = "<a href='".$doc_path."'>".$rows['call_no']."</a>";
+					      //$email_call_no = $rows['call_no'];
 					      $email_file_no = $rows['file_no'];
 					      $email_call_client = $rows['client_name'];
 					      $email_call_location = $rows['inspection_location'];
@@ -201,7 +382,7 @@ class Callscheduleregister extends MX_Controller {
 				     	  $email_call_enduser_loc = $call_details[0]['end_user_location'];					      
 
 					      $config['protocol'] = 'smtp';
-						  $config['smtp_host'] = 'rcahrd.in';
+						  $config['smtp_host'] = 'mail.rcahrd.in';
 						  $config['smtp_port'] = '587';
 						  $config['smtp_user'] = 'admin@rcahrd.in';
 						  $config['smtp_from_name'] = 'RCAINDIA Tech (Do_Not_Reply)';
@@ -248,20 +429,22 @@ class Callscheduleregister extends MX_Controller {
 
 						    $call_email_report .= '<br><b>NOTE: This is a system generated mail. Please do not reply</b><br><br>';   
 
-			    			echo $call_email_report;exit;
+			    			//echo $call_email_report;exit;
 
 			    			$this->email->initialize($config);
 
 						    $this->email->from($config['smtp_user'], $config['smtp_from_name']); 
 						    $this->email->to($email_call_to); //$_SESSION['user_email']  
 
-						    $call_lead_emails_cc = $this->Call_master->getEmailidsCallEmails();
+						    $call_lead_emails_cc = $this->Call_master->getEmailidsCallGenerate($_SESSION['branch_id']);
 							//print_r($call_lead_emails_cc);exit;
 
 			        		foreach ($call_lead_emails_cc as $rows) {
 			        			$email_cc[] = $rows['office_email'];
 			        		}
 				        	$this->email->cc($email_cc);
+
+				        	$this->email->bcc('shivaji.dalvi@rcaindia.com');
 
 				        	$this->email->subject($subject);
 
@@ -276,13 +459,13 @@ class Callscheduleregister extends MX_Controller {
 					       		$redirecturl = BASE_PATH."Callrescheduleregister";
 			               		redirect($redirecturl);
 					    	}*/
-				      }
 
-				      //print_r($call_email_report);exit;
+				       }
+				       //print_r($call_email_report);exit;
 
-
-        		$redirecturl = BASE_PATH."Viewcallschedule?msg=1";
-			    redirect($redirecturl);  
+				       $redirecturl = BASE_PATH."Viewcallschedule?msg=1";
+			    	   redirect($redirecturl);  
+	        	}	
         	}
 		} else {
 
@@ -290,8 +473,18 @@ class Callscheduleregister extends MX_Controller {
 			$fid = base64_decode($_GET['fid']);
 			//echo $id."===".$fid;exit;
 
+			$branches = $this->Branch_master->getBranchAlldata();
+			//print_r($branches);exit;
+
 			$call_data = $this->Call_master->getCallGenerationByCallId($id,$fid);
 			//print_r($call_data);exit;
+			
+			$call_status = array('Scheduled','Rescheduled','Completed','Cancelled','Inspection Started','Report Pending','Report Assinged'); // ,'Assigned'
+			if (in_array($call_data[0]['status'], $call_status)) {
+				echo "<h3>Your Call Status Already Submitted , From RCAtech Admin</h3>";exit;
+			}
+
+
 			#echo $call_data[0]['id'];exit;
 			if ($call_data[0]['id']) {
 				$emp_status = array('SURVEYOR HEAD','EMPLOYEE');
@@ -327,6 +520,7 @@ class Callscheduleregister extends MX_Controller {
 			$data['file_id'] = $fid;
 			$data['call_data'] = $call_data;
 			$data['file_data'] = $result;
+			$data['branches_data'] = $branches;
 			$data['item_details'] = $item_details;
 			$data['call_docsdata'] = $call_docsdata;
 			$data['inspection_schedule_date'] = $inspection_schedule_date;

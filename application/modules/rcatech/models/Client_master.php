@@ -16,7 +16,7 @@ class Client_master extends CI_Model{
     #$data['company_state'] = $this->fetchStateById($data['company_state']);
     #$data['company_city'] = $this->fetchCityById($data['company_city']);
 
-    $result = array('comp_id'=>$data['user_company'],'branch_id'=>$data['branch_name'],'client_type'=>$data['client_type'],'client_name'=>$data['client_name'],'client_shortname'=>$data['client_shortname'],'address'=>$data['client_address'],'country_id'=>$data['company_country'],'state_id'=>$data['company_state'],' city_id'=>$data['company_city'],'country_code'=>$data['client_tel_prefix'],'zip_pin_code'=>$data['postal_code'],'tel_no'=>$data['client_tel'],'email_address'=>$data['client_email'],'gst_no'=>@$data['client_gst'],'client_gst_legal'=>@$data['client_gst_legal'],'client_gst_pay'=>@$data['client_gst_pay'],'client_gst_options'=>@$data['client_gst_options'],'gst_email_date'=>@$data['gst_email_date'],'client_gst_type'=>@$data['client_gst_type'],'upl_gst_type'=>@$data['upl_gst_type'],'pan_no'=>@$data['client_pan'],'vat_no'=>@$data['client_vat'],'tan_no'=>@$data['client_tan'],'mobile_no'=>$data['client_mobile'],' firm_type'=>$data['client_firm'],'entry_user_id'=>$data['user_id'],'entry_date'=>$data['dt'],'is_active'=>1,'user_comp_id'=>$data['user_company'],'user_branch_id'=>$data['branch_name']);
+    $result = array('comp_id'=>$data['user_company'],'branch_id'=>'1','client_type'=>$data['client_type'],'client_name'=>$data['client_name'],'client_shortname'=>$data['client_shortname'],'client_location'=>$data['city_name'],'address'=>$data['client_address'],'country_id'=>$data['company_country'],'state_id'=>$data['company_state'],' city_id'=>$data['company_city'],'country_code'=>$data['client_tel_prefix'],'zip_pin_code'=>$data['postal_code'],'tel_no'=>$data['client_tel'],'email_address'=>$data['client_email'],'gst_no'=>@$data['client_gst'],'client_gst_legal'=>@$data['client_gst_legal'],'client_gst_pay'=>@$data['client_gst_pay'],'client_gst_options'=>@$data['client_gst_options'],'gst_email_date'=>@$data['gst_email_date'],'client_gst_type'=>@$data['client_gst_type'],'upl_gst_type'=>@$data['upl_gst_type_path'],'pan'=>@$data['client_pan'],'vat_no'=>@$data['client_vat'],'tan_no'=>@$data['client_tan'],'mobile_no'=>$data['client_mobile'],' firm_type'=>$data['client_firm'],'entry_user_id'=>$data['user_id'],'entry_date'=>$data['dt'],'is_active'=>1,'user_comp_id'=>$data['user_company'],'user_branch_id'=>'1'); // $data['branch_name']
     //print_r($result);exit;
     $this->db->insert('rcatech_client_master',$result);
     return $this->db->insert_id();
@@ -46,7 +46,18 @@ class Client_master extends CI_Model{
           $result = $queryforpubid->result_array();
 
           return @$result[0];
-    }  
+    } 
+
+    function getAllClientdetails($params){  
+
+          $querystring = "SELECT * FROM rcatech_client_details where client_id ='".$params."'";
+
+          $queryforpubid = $this->db->query($querystring);
+
+          $result = $queryforpubid->result_array();
+
+          return @$result;
+    } 
 
     function getClientdata(){  //$id
 
@@ -90,7 +101,7 @@ class Client_master extends CI_Model{
                             left join rcatech_countries acnt ON acnt.id=acm.country_id
                             left join rcatech_states ast ON ast.id=acm.state_id
                             left join rcatech_cities act ON act.id=acm.city_id
-                            where is_active = $id and comp_id = '".$_SESSION['comp_id']."' and branch_id = '".$_SESSION['branch_id']."' order by acm.client_name asc";
+                            where is_active = $id and comp_id = '1' and branch_id = '1' order by acm.client_name asc"; // $_SESSION['comp_id']   $_SESSION['branch_id']
         $queryforpubid = $this->db->query($querystring);
 
         $result = $queryforpubid->result_array();

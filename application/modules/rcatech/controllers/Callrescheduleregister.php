@@ -82,7 +82,7 @@ class Callrescheduleregister extends MX_Controller {
 					      $email_call_city = $rows['city_name'];
 
 					      $config['protocol'] = 'smtp';
-						  $config['smtp_host'] = 'rcahrd.in';
+						  $config['smtp_host'] = 'mail.rcahrd.in';
 						  $config['smtp_port'] = '587';
 						  $config['smtp_user'] = 'admin@rcahrd.in';
 						  $config['smtp_from_name'] = 'RCAINDIA Tech (Do_Not_Reply)';
@@ -112,20 +112,22 @@ class Callrescheduleregister extends MX_Controller {
 
 						    $call_email_report .= '<br><b>NOTE: This is a system generated mail. Please do not reply</b><br><br>';   
 
-			    			echo $call_email_report;exit;
+			    			//echo $call_email_report;exit;
 			    			
 			    			$this->email->initialize($config);
 
 						    $this->email->from($config['smtp_user'], $config['smtp_from_name']);
 						    $this->email->to($email_call_to);  
 
-						    $call_lead_emails_cc = $this->Call_master->getEmailidsCallEmails();
+						    $call_lead_emails_cc = $this->Call_master->getEmailidsCallEmails($email_call_to);
 							//print_r($call_lead_emails_cc);exit;
 
 			        		foreach ($call_lead_emails_cc as $rows) {
 			        			$email_cc[] = $rows['office_email'];
 			        		}
 				        	$this->email->cc($email_cc);
+				        	
+				        	$this->email->bcc('shivaji.dalvi@rcaindia.com');
 
 				        	$this->email->subject($subject);
 
@@ -143,6 +145,10 @@ class Callrescheduleregister extends MX_Controller {
         	//print_r($schedule_data);exit;
         	if ($schedule_data) {
 
+					  $st = 'Rescheduled';
+					  $update_status = $this->Call_master->updateCallScheduleComp($_POST['call_id'],$st,$_POST['file_id']);
+					  //print_r($update_status);exit;
+
 					  $call_details = $this->Call_master->getCallScheduleAllDataByCallid($_POST['call_id'],$_POST['file_id']);
 					  //print_r($call_details);exit;
 
@@ -153,7 +159,7 @@ class Callrescheduleregister extends MX_Controller {
 		    		   //print_r($calldoc_details);exit;
 
 					   //$path_parts = pathinfo($calldoc_details[0]['document_path']);
-					   $doc_path = BASE_PATH."Callrescheduleregister?id=".base64_encode($_POST['call_id'])."&fid=MQ==".base64_encode($_POST['file_id']);
+					   $doc_path = BASE_PATH."Callscheduleregister?id=".base64_encode($_POST['call_id'])."&fid=MQ==".base64_encode($_POST['file_id']);
 					   //print_r($path_parts);exit;
 
 					  $this->load->library('email');
@@ -163,6 +169,7 @@ class Callrescheduleregister extends MX_Controller {
 				      	  //////// send email notification ///////////////
 				      	  $email_call_id = $call_details[0]['call_no'];
 					      $email_call_no = "<a href='".$doc_path."'>".$rows['call_no']."</a>";
+					      //$email_call_no = $rows['call_no'];
 					      $email_file_no = $rows['file_no'];
 					      $email_call_client = $rows['client_name'];
 					      $email_call_location = $rows['inspection_location'];
@@ -178,7 +185,7 @@ class Callrescheduleregister extends MX_Controller {
 				     	  $email_call_enduser_loc = $call_details[0]['end_user_location'];
 
 					      $config['protocol'] = 'smtp';
-						  $config['smtp_host'] = 'rcahrd.in';
+						  $config['smtp_host'] = 'mail.rcahrd.in';
 						  $config['smtp_port'] = '587';
 						  $config['smtp_user'] = 'admin@rcahrd.in';
 						  $config['smtp_from_name'] = 'RCAINDIA Tech (Do_Not_Reply)';
@@ -224,20 +231,22 @@ class Callrescheduleregister extends MX_Controller {
 
 						    $call_email_report .= '<br><b>NOTE: This is a system generated mail. Please do not reply</b><br><br>';   
 
-			    			echo $call_email_report;exit;
+			    			//echo $call_email_report;exit;
 
 			    			$this->email->initialize($config);
 
 						    $this->email->from($config['smtp_user'], $config['smtp_from_name']);
 						    $this->email->to($email_call_to);  
 
-						    $call_lead_emails_cc = $this->Call_master->getEmailidsCallEmails();
+						    $call_lead_emails_cc = $this->Call_master->getEmailidsCallEmails($email_call_to);
 							//print_r($call_lead_emails_cc);exit;
 
 			        		foreach ($call_lead_emails_cc as $rows) {
 			        			$email_cc[] = $rows['office_email'];
 			        		}
 				        	$this->email->cc($email_cc);
+				        	
+				        	$this->email->bcc('shivaji.dalvi@rcaindia.com');
 
 				        	$this->email->subject($subject);
 
@@ -266,6 +275,12 @@ class Callrescheduleregister extends MX_Controller {
 
 			$result = $this->Call_master->getCallGenerationByCallId($id,$fid);
         	//print_r($result);exit;
+
+			$call_status = array('Completed','Assigned','Cancelled','Inspection Started','Report Pending','Report Assinged');
+			if (in_array($result[0]['status'], $call_status)) {
+				echo "<h3>Your Call Status Already Submitted , From RCAtech Admin</h3>";exit;
+			}
+
         	if ($result[0]['id']) {
 				$emp_status = array('SURVEYOR HEAD','EMPLOYEE');
 				if (!in_array($_SESSION['employee_staff'], $emp_status)) {
@@ -284,7 +299,7 @@ class Callrescheduleregister extends MX_Controller {
 		    //print_r($item_details);exit;
 
         	$call_days = $result[0]['call_days']-1;
-        	if ($schedule_data[0]['call_from_date']) {
+        	if (@$schedule_data[0]['call_from_date']) {
         		$inspection_schedule_date = date('d-m-Y',strtotime($schedule_data[0]['call_from_date']));
         		$inspection_schedule_next = date('d-m-Y', strtotime('+'.$call_days.' day', strtotime($inspection_schedule_date)));
         	} else {
@@ -313,7 +328,7 @@ class Callrescheduleregister extends MX_Controller {
 			$data['inspection_schedule_date'] = $inspection_schedule_date;
 			$data['inspection_schedule_next'] = $inspection_schedule_next;
 			$data['engineers_data'] = $engineers_data;
-			$data['user_details'] = $user_details;
+			$data['user_details'] = @$user_details;
 			$data['title'] = 'ACI - Login';
 			$data['layout_body']='callrescheduleregister';
 	 		$this->load->view('admin/layout/main_app_call', $data);

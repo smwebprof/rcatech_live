@@ -392,6 +392,96 @@ var Custom = function () {
 
         },
 
+        initReportGen: function () {
+            $('.reportgen-form').validate({
+                errorElement: 'span', //default input error message container
+                errorClass: 'help-block', // default input error message class
+                focusInvalid: false, // do not focus the last invalid input
+                rules: {
+                    call_file_no: {
+                        required: true
+                    },
+                    call_no: {
+                        required: true
+                    },
+                    call_from_date: {
+                        required: false
+                    },
+                    call_to_date: {
+                        required: false
+                    },
+                    engineer_data: {
+                        required: true
+                    },
+                    remarks: {
+                        required: true
+                    },
+                    report_gen: {
+                        required: true
+                    },
+                    company_panno: {
+                        required: false
+                    },
+                    remember: {
+                        required: false
+                    }
+                },
+
+                messages: {
+                    call_file_no: {
+                        required: "File no is required."
+                    },
+                    call_no: {
+                        required: "Call No is required."
+                    },
+                    call_from_date: {
+                        required: "Call From Date is required."
+                    },
+                    call_to_date: {
+                        required: "Call To Date is required."
+                    },
+                    engineer_data: {
+                        required: "Engineers Name is required."
+                    },
+                    remarks: {
+                        required: "Remarks is required."
+                    },
+                    report_gen: {
+                        required: "Report Generation Status is required."
+                    },
+                    company_panno: {
+                        required: "PAN No is required."
+                    },
+                    invoice_incharge: {
+                        required: "Invoice Incharge is required."
+                    }
+                },
+
+                invalidHandler: function (event, validator) { //display error alert on form submit   
+                    $('.alert-danger', $('.companymaster-form')).show();
+                },
+
+                highlight: function (element) { // hightlight error inputs
+                    $(element)
+                        .closest('.form-group').addClass('has-error'); // set error class to the control group
+                },
+
+                success: function (label) {
+                    label.closest('.form-group').removeClass('has-error');
+                    label.remove();
+                },
+
+                errorPlacement: function (error, element) {
+                    error.insertAfter(element.closest('.input-icon'));
+                },
+
+                submitHandler: function (form) {
+                    form.submit(); // form validation success, call ajax form submit
+                }
+            });
+
+        },
+
         initRfiSent: function () {
             $('.addrfiregister-form').validate({
                 errorElement: 'span', //default input error message container
@@ -489,7 +579,7 @@ var Custom = function () {
                         required: true
                     },
                     nabcb_flag: {
-                        required: true
+                        required: false
                     },
                     is_active: {
                         required: true
@@ -690,6 +780,96 @@ var Custom = function () {
                 messages: {
                     manufacturer_name: {
                         required: "Manufacturer name is required."
+                    },
+                    item_id: {
+                        required: "Item name is required."
+                    },
+                    department_id: {
+                        required: "Department is required."
+                    },
+                    nabcb_flag: {
+                        required: "NABCB Flag is required."
+                    },
+                    is_active: {
+                        required: "is Active is required."
+                    },
+                    rate_remarks: {
+                        required: "Remarks is required."
+                    },
+                    status: {
+                        required: "Status is required."
+                    },
+                    company_panno: {
+                        required: "PAN No is required."
+                    },
+                    invoice_incharge: {
+                        required: "Invoice Incharge is required."
+                    }
+                },
+
+                invalidHandler: function (event, validator) { //display error alert on form submit   
+                    $('.alert-danger', $('.companymaster-form')).show();
+                },
+
+                highlight: function (element) { // hightlight error inputs
+                    $(element)
+                        .closest('.form-group').addClass('has-error'); // set error class to the control group
+                },
+
+                success: function (label) {
+                    label.closest('.form-group').removeClass('has-error');
+                    label.remove();
+                },
+
+                errorPlacement: function (error, element) {
+                    error.insertAfter(element.closest('.input-icon'));
+                },
+
+                submitHandler: function (form) {
+                    form.submit(); // form validation success, call ajax form submit
+                }
+            });
+
+        },
+
+        initAddVendor: function () {
+            $('.addvendor-form').validate({
+                errorElement: 'span', //default input error message container
+                errorClass: 'help-block', // default input error message class
+                focusInvalid: false, // do not focus the last invalid input
+                rules: {
+                    vendor_name: {
+                        required: true
+                    },
+                    item_id: {
+                        required: false
+                    },
+                    department_id: {
+                        required: false
+                    },
+                    nabcb_flag: {
+                        required: false
+                    },
+                    is_active: {
+                        required: true
+                    },
+                    rate_remarks: {
+                        required: false
+                    },
+                    status: {
+                        required: false
+                    },
+                    company_panno: {
+                        required: false
+                    },
+                    remember: {
+                        required: false
+                    }
+                },
+
+                messages: {
+                    vendor_name: {
+                        required: "Vendor name is required."
                     },
                     item_id: {
                         required: "Item name is required."
@@ -1014,7 +1194,7 @@ var Custom = function () {
                         required: false,
                     },
                     client_tan: {
-                        required: true,
+                        required: false,
                     },
                     client_pan: {
                         required: true,

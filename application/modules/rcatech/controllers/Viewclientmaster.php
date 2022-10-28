@@ -49,6 +49,7 @@ class Viewclientmaster extends MX_Controller {
 		$data['layout_body']='viewclientmaster';
 
 		$result = $this->client_master->getAllClientdata($status);
+		//print_r($result);exit;
 
 		$params['main_menus'] = $mainmodule_id;
         $params['sub_menus'] = $submodule_id;

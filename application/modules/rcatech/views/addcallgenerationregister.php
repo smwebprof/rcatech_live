@@ -167,7 +167,8 @@
 											
 											<div class="form-body">
 												<h3 class="form-section alert alert-info">Call Details - Please read the Instructions in Red Before Clicking Submit</h3>
-												* Marked fields are Mandatory <br/><br/>
+												<font style="color:red" size="3" >*** Please Add Manufacturer, Vendor first if not Present</font> <br/>
+												<font style="color:red" size="3" >* Marked fields are Mandatory</font> <br/><br/>
 
 
 												<div class="row">
@@ -247,12 +248,12 @@
 														<div class="form-group">
 															<label class="control-label col-md-3"><font color="red">Manufacturer*</font></label>
 															<div class="col-md-9">
-																<select class="form-control input-large select2me" data-placeholder="Select..." name="call_manufacturer" id="call_manufacturer">
-																	<option value="">Please Select</option>
-																	<?php foreach($manufacturer_data as $rows) {  ?>
-																	<option value="<?php echo $rows['id']; ?>"><?php echo $rows['manufacturer_name']; ?></option>
-																	<?php } ?>
-																</select>
+																<input list="manufacturer_list" class="form-control" name="call_manufacturer" id="call_manufacturer" style="width:60%" />
+																<datalist id="manufacturer_list">
+																  <?php foreach($manufacturer_data as $rows) {  ?>
+																  	<option><?php echo $rows['manufacturer_name']; ?></option>
+																  	<?php } ?>
+																</datalist>
 																<span for="call_manufacturer" class="help-block"></span>
 															</div>
 														</div>
@@ -264,13 +265,13 @@
 													<div class="col-md-6">
 														<div class="form-group">
 															<label class="control-label col-md-3">Vendor </label>
-															<div class="col-md-9">		
-																<select class="form-control input-large select2me" data-placeholder="Select..." name="call_vendor" id="call_vendor">
-																	<option value="">Please Select</option>
-																	<?php foreach($vendor_data as $rows) {  ?>
-																	<option value="<?php echo $rows['id']; ?>"><?php echo $rows['vendor_name']; ?></option>
-																	<?php } ?>
-																</select>
+															<div class="col-md-9">
+																<input list="vendor_list" class="form-control" name="call_vendor" id="call_vendor" style="width:60%" />
+																<datalist id="vendor_list">
+																  <?php foreach($vendor_data as $rows) {  ?>
+																  	<option><?php echo $rows['vendor_name']; ?></option>
+																  	<?php } ?>
+																</datalist>
 																<span for="call_vendor" class="help-block"></span>
 															</div>
 														</div>

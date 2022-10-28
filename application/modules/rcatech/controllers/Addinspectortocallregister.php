@@ -50,7 +50,7 @@ class Addinspectortocallregister extends MX_Controller {
 			}
 
 			########### For Cancelled Inspection for Inspector - Cancel Email
-			$call_details = $this->Call_master->getCallScheduleAllDataByCallid($_POST['call_id'],$_POST['file_id']);
+			/****$call_details = $this->Call_master->getCallScheduleAllDataByCallid($_POST['call_id'],$_POST['file_id']);
 			//print_r($call_details);exit;
 			foreach ($call_details as $call_info) {
 				$call_info_arr[] = $call_info['engineer_id'];
@@ -135,11 +135,11 @@ class Addinspectortocallregister extends MX_Controller {
 
 				    }	
 				}
-			}
+			} ***/
 			//print_r($engg_details);exit;
 	
 
-			$schedule_data = $this->Call_master->updateCallScheduledata($_POST);
+			$schedule_data = $this->Call_master->updateCallScheduleAddInsp($_POST);
         	//print_r($schedule_data);exit;
         	if ($schedule_data) {
 

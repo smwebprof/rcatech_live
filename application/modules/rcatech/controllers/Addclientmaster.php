@@ -44,11 +44,45 @@ class Addclientmaster extends MX_Controller {
 
       
         if (@$_POST) {
+        	//print_r($_FILES);exit;
         	//print_r($_POST);exit;	
         	$_POST['user_id'] = @$_SESSION['userId']; 
         	$dt = gmdate('Y-m-d H:i:s');
         	$_POST['dt'] = $dt;
         	//print_r($this->input->post());exit;
+
+        	$city_name = $this->company_master->fetchCityById($_POST['company_city']);
+        	$_POST['city_name'] = $city_name[0]['name'];
+
+        	$file_no_upl = date('YmdHis');
+			$folder_upl_path = @mkdir('./files/clientdocs/', 0777, true);
+
+			$upload_path = APP_UPLOAD_PATH.'files/clientdocs/';
+			$config['upload_path'] = './files/clientdocs/';
+        	$config['allowed_types'] = '*'; //xls|pdf|doc //*
+        	$config['max_size'] = 512000;
+        	$file_name = $_FILES["upl_gst_type"]['name'];
+        	$file_parts = pathinfo($file_name);
+        	$new_name = $file_no_upl.'.'.$file_parts['extension'];
+        	$config['file_name'] = $new_name;
+
+        	$this->load->library('upload', $config);
+        	$this->upload->initialize($config);
+
+        	$upl_call_docs = array();
+        	if (!$this->upload->do_upload('upl_gst_type')) {
+            $error = array('error' => $this->upload->display_errors());
+            //print_r($error);exit;
+       		} else {
+            $data = array('upl_gst_type_path' => $this->upload->data());
+
+            //$_POST['upl_gst_type_path'] = $upload_path.$data['upl_gst_type_path']['file_name'];
+            $_POST['upl_gst_type_path'] = $upload_path.$new_name;
+            if (!$_POST['upl_gst_type_path']) { $_POST['upl_gst_type_path'] = '';}
+        	}
+
+        	//echo $_POST['upl_gst_type_path'];exit;
+
         	$resultdata = $this->client_master->addClientmaster($this->input->post());
         	//$resultdata = 1;
 
@@ -72,7 +106,7 @@ class Addclientmaster extends MX_Controller {
 				#$this -> load -> model('campaign_model');
 				$data['success'] = "Data is inserted successfully!!!";
 				$data['layout_body']='addclientmaster';
-				$data['countries'] = $result;
+				$data['countries'] = $countries;
 				$data['company_data'] = $companies;
 				$data['branchs_data']=$branchs;
  	

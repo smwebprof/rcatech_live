@@ -167,9 +167,55 @@ class General_master extends CI_Model{
     }
 
 
+    function getEmpetails($params){  
+
+          $querystring = "SELECT * FROM rcatech_employee_users_master Where emp_code = '".$params[0]."'";
+
+          $queryforpubid = $this->db->query($querystring);
+
+          $result = $queryforpubid->result_array();
+          //print_r($result);exit;
+          $resultmax = 0;
+          if (empty($result[0]['id'])) {
+             //echo $resultmax = $params[0];exit;
+            $result = array('emp_code'=>$params[0],'company_id'=>$params[1],'branch_id'=>$params[2],'first_name'=>$params[3],'middle_name'=>$params[4],'last_name'=>$params[5],'current_address'=>$params[6],'permanent_address'=>$params[7],'birth_date'=>$params[8],'office_email'=>'rcainetdocs@gmail.com','personal_email'=>$params[10],'password'=>'NTc5ZmQxNTc0MWJlMjU1MGE0NGFlODQ2ZDNlMWFlNGU=','gender'=>$params[12],'moblie_no'=>$params[13],'pan_no_tax_id'=>$params[14],'uidaino_aadhar_card'=>$params[15],'emp_designation_id'=>$params[16],'entry_user_id'=>$params[17],'modify_user_id'=>$params[18],'entry_date'=>'2022-10-12 00:00:00','modify_date'=>'2022-10-12 00:00:00','is_active'=>'1','employee_staff'=>$params[22],'city_id'=>$params[23],'state_id'=>$params[24],'country_id'=>$params[25],'country_code'=>$params[26]);
+             //print_r($result);exit;
+
+             $this->db->insert('rcatech_employee_users_master',$result);
+             $resultmax = $this->db->insert_id();
+          } 
+          
+          return $resultmax;
+    }
+
+    function getEnggdetails($params){  
+
+          $querystring = "SELECT * FROM  rcatech_engineerlist_master Where emp_code = '".$params[1]."'";
+
+          $queryforpubid = $this->db->query($querystring);
+
+          $result = $queryforpubid->result_array();
+          //print_r($result);exit;
+          $resultmax = 0;
+          if (empty($result[0]['id'])) {
+             //echo $resultmax = $params[0];exit;
+            $result = array('branch_id'=>$params[0],'emp_code'=>$params[1],'first_name'=>$params[2],'middle_name'=>$params[3],'last_name'=>$params[4],'mother_name'=>$params[5],'short_name'=>$params[6],'birth_date'=>$params[7],'sch_retirement_date'=>$params[8],'retirement_date'=>$params[9],'address'=>$params[10],'phone'=>$params[11],'mobile'=>$params[12],'email'=>'rcainetdocs@gmail.com','secondary_email'=>$params[14],'category_name'=>$params[15],'nabcb_flag'=>'0','role'=>'Inspector','entry_user_id'=>'1','modify_user_id'=>'1','entry_date'=>'2022-10-12 00:00:00','modify_date'=>'2022-10-12 00:00:00','is_active'=>'1','user_comp_id'=>'1','user_branch_id'=>'1','op_year'=>'1');
+             //print_r($result);exit;
+
+             $this->db->insert('rcatech_engineerlist_master',$result);
+             $resultmax = $this->db->insert_id();
+          } 
+          
+          return $resultmax;
+    }
+
+
     function getManufacturerdata(){ 
 
-        $querystring = "SELECT * FROM  rcatech_manufacturer_master";
+        $querystring = "SELECT rmm.*,rim.item_name,rism.subitem_name FROM  rcatech_manufacturer_master rmm
+        left join rcatech_item_master rim on rim.id=rmm.item_id
+        left join rcatech_item_subtype_master rism on rism.id=rmm.item_subtype_id
+        ";
         $queryforpubid = $this->db->query($querystring);
 
         $result = $queryforpubid->result_array();
@@ -179,7 +225,9 @@ class General_master extends CI_Model{
 
     function getVendordata(){ 
 
-        $querystring = "SELECT * FROM  rcatech_vendor_master";
+        $querystring = "SELECT rvm.*,rim.item_name,rism.subitem_name FROM  rcatech_vendor_master rvm left join rcatech_item_master rim on rim.id=rvm.item_id
+        left join rcatech_item_subtype_master rism on rism.id=rvm.item_subtype_id
+        ";
         $queryforpubid = $this->db->query($querystring);
 
         $result = $queryforpubid->result_array();

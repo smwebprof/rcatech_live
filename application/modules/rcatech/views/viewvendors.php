@@ -123,6 +123,12 @@
 									 Vendor Name
 								</th>
 								<th>
+									 Item Name
+								</th>
+								<th>
+									 Sub Item Name
+								</th>
+								<th>
 									 Active
 								</th>
 								<?php #if ($data['access_right']['edit_rights'] == 1) { ?>
@@ -154,6 +160,12 @@
 									 <?php 
 									 if ($vendor_data['is_active']==1) { echo 'Yes'; } else { echo 'No';}
 									 ?>
+								</td>
+								<td>
+									<?php echo $vendor_data['item_name']; ?>
+								</td>
+								<td>
+									 <?php echo $vendor_data['subitem_name']; ?>
 								</td>
 								<?php if ($access_right['edit_rights'] == 1) { ?>
 								<td>

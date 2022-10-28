@@ -172,7 +172,7 @@
 									<div class="portlet-body form">
 										<!-- BEGIN FORM-->
 
-										<form action="" method="post" class="form-horizontal clientmaster-form">
+										<form action="" method="post" class="form-horizontal clientmaster-form" enctype="multipart/form-data">
 											<?php
 												   #print_r($data);
 												   echo validation_errors();
@@ -483,7 +483,7 @@
 															<label class="control-label col-md-3">Upload GSTReg.Cert</label>
 															<div class="col-md-9">
 																<input type="file" id='upl_gst_type' name="upl_gst_type">
-																	 <span>*Only pdf,doc,xls accepted</span>
+																<span>*Only pdf,doc,xls accepted</span>
 																<span for="upl_gst_type" class="help-block"></span>
 															</div>
 														</div>
@@ -520,7 +520,7 @@
 												<div class="row">
 													<div class="col-md-6">
 														<div class="form-group">
-															<label class="control-label col-md-3">TAN No*</label>
+															<label class="control-label col-md-3">TAN No</label>
 															<div class="col-md-9">
 																<input type="text" class="form-control" placeholder="" name="client_tan" id="client_tan">
 																<span for="client_tan" class="help-block"></span>

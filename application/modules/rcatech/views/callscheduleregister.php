@@ -334,6 +334,7 @@
 
 
 												<h3 class="form-section alert alert-info">Call Info - On Submit Link will goto inspector</h3>
+												<font color="red" size="3">***Engineer Name is Required, if Call Shedule for Same Branch</font> <br/>
 												* Marked fields are Mandatory <br/><br/>
 
 												<div class="row">
@@ -385,9 +386,31 @@
 												<!--/row-->
 
 											<div class="row">
+												    <div class="col-md-6">
+														<div class="form-group">
+															<label class="control-label col-md-3"><font color="red">Assigned To Branch*</font></label>
+															<div class="col-md-6">
+																<select class="form-control" name="assigned_to_branch" id="assigned_to_branch">
+																<option value="">Select Branch</option>	
+																	<?php
+													                $rows = $branches_data;
+
+													                foreach($rows as $branches_data){ 
+													                	if ($_SESSION['branch_id']==$branches_data["id"]) {
+													                	echo '<option value='.$branches_data["id"].' selected>'.$branches_data["branch_name"].'</option>';		
+													                	} else {
+													                		echo '<option value='.$branches_data["id"].'>'.$branches_data["branch_name"].'</option>';
+													                	}
+													                }	
+																	?>
+																</select>
+																<span for="assigned_to_branch" class="help-block"></span>
+															</div>
+														</div>
+													</div>
 													<div class="col-md-6">
 														<div class="form-group">
-															<label class="control-label col-md-3"><font color="red">Engineers Name*</font></label>
+															<label class="control-label col-md-3">Engineers Name</label>
 															<div class="col-md-6">
 																<select class="form-control input-large select2me" data-placeholder="Select..." name="engineer_data[]" id="engineer_data" multiple>
 																	<?php foreach($engineers_data as $rows) {  ?>
